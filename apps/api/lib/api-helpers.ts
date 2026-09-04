@@ -24,11 +24,40 @@ export async function getAuthenticatedUser(req: NextRequest) {
 }
 
 const DEFAULT_ALLOWED_ORIGINS = [
+  "https://admincodeydev.vercel.app",
+  "https://codeydev.vercel.app",
+  "https://codeydev.com",
+  "https://admin.codeydev.com",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://127.0.0.1:3000",
   "http://127.0.0.1:3001",
 ];
+
+export function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return false;
+
+  const configuredOrigins = [
+    ...(process.env["PUBLIC_PORTAL_URL"] ? [process.env["PUBLIC_PORTAL_URL"]] : []),
+    ...(process.env["ADMIN_PORTAL_URL"] ? [process.env["ADMIN_PORTAL_URL"]] : []),
+    ...(process.env["ALLOWED_ORIGINS"] ? process.env["ALLOWED_ORIGINS"].split(",").map((s) => s.trim()) : []),
+    ...DEFAULT_ALLOWED_ORIGINS,
+  ];
+
+  if (configuredOrigins.includes(origin)) return true;
+
+  // Allow Vercel preview and deployment domains for this project
+  if (/^https:\/\/(admincodeydev|codeydev)[a-zA-Z0-9-]*\.vercel\.app$/.test(origin)) {
+    return true;
+  }
+
+  // Allow localhost during non-production
+  if (process.env.NODE_ENV !== "production" && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+    return true;
+  }
+
+  return false;
+}
 
 export function getCorsHeaders(reqOrOrigin?: Request | Headers | string | null): Record<string, string> {
   let origin: string | null = null;
@@ -40,24 +69,13 @@ export function getCorsHeaders(reqOrOrigin?: Request | Headers | string | null):
     origin = (reqOrOrigin as Headers).get("origin");
   }
 
-  const configuredOrigins = [
-    ...(process.env["PUBLIC_PORTAL_URL"] ? [process.env["PUBLIC_PORTAL_URL"]] : []),
-    ...(process.env["ADMIN_PORTAL_URL"] ? [process.env["ADMIN_PORTAL_URL"]] : []),
-    ...(process.env["ALLOWED_ORIGINS"] ? process.env["ALLOWED_ORIGINS"].split(",").map((s) => s.trim()) : []),
-    ...DEFAULT_ALLOWED_ORIGINS,
-  ];
-
-  const isAllowed = origin && (
-    configuredOrigins.includes(origin) ||
-    (process.env.NODE_ENV !== "production" && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin))
-  );
-
-  const allowOrigin = (isAllowed && origin) ? origin : (process.env["PUBLIC_PORTAL_URL"] ?? "http://localhost:3000");
+  const isAllowed = isOriginAllowed(origin);
+  const allowOrigin = (isAllowed && origin) ? origin : "https://codeydev.vercel.app";
 
   return {
     "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Accept",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Accept, Origin",
     "Access-Control-Allow-Credentials": "true",
     "Vary": "Origin",
   };
