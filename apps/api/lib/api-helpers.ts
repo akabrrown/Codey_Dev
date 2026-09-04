@@ -4,8 +4,12 @@ import type { NextRequest } from "next/server";
 export function createAdminSupabaseClient() {
   const url = process.env["NEXT_PUBLIC_SUPABASE_URL"];
   const key = process.env["SUPABASE_SERVICE_ROLE_KEY"];
-  if (!url || !key) throw new Error("Supabase env vars missing");
-  return createClient(url, key, { auth: { persistSession: false } });
+  if (!url || !key) return null;
+  try {
+    return createClient(url, key, { auth: { persistSession: false } });
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -13,14 +17,21 @@ export function createAdminSupabaseClient() {
  * Returns the authenticated user or null if invalid/missing.
  */
 export async function getAuthenticatedUser(req: NextRequest) {
-  const authorization = req.headers.get("authorization");
-  if (!authorization?.startsWith("Bearer ")) return null;
+  try {
+    const authorization = req.headers.get("authorization");
+    if (!authorization?.startsWith("Bearer ")) return null;
 
-  const token = authorization.slice(7);
-  const supabase = createAdminSupabaseClient();
-  const { data, error } = await supabase.auth.getUser(token);
-  if (error || !data.user) return null;
-  return data.user;
+    const token = authorization.slice(7);
+    const supabase = createAdminSupabaseClient();
+    if (!supabase) return null;
+
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data.user) return null;
+    return data.user;
+  } catch (err) {
+    console.error("getAuthenticatedUser error:", err);
+    return null;
+  }
 }
 
 const DEFAULT_ALLOWED_ORIGINS = [
@@ -91,10 +102,11 @@ export function apiResponse<T>(
   options: { status?: number; requestId?: string; headers?: HeadersInit; meta?: unknown; req?: Request } = {}
 ) {
   const headers = new Headers(options.headers);
-  if (options.req) {
-    const cors = getCorsHeaders(options.req);
-    Object.entries(cors).forEach(([k, v]) => headers.set(k, v));
-  }
+  const cors = options.req ? getCorsHeaders(options.req) : CORS_HEADERS;
+  Object.entries(cors).forEach(([k, v]) => {
+    if (!headers.has(k)) headers.set(k, v);
+  });
+
   return Response.json(
     {
       success: true,
@@ -115,10 +127,11 @@ export function apiError(
   options: { status?: number; field?: string; requestId?: string; headers?: HeadersInit; req?: Request } = {}
 ) {
   const headers = new Headers(options.headers);
-  if (options.req) {
-    const cors = getCorsHeaders(options.req);
-    Object.entries(cors).forEach(([k, v]) => headers.set(k, v));
-  }
+  const cors = options.req ? getCorsHeaders(options.req) : CORS_HEADERS;
+  Object.entries(cors).forEach(([k, v]) => {
+    if (!headers.has(k)) headers.set(k, v);
+  });
+
   return Response.json(
     {
       success: false,
