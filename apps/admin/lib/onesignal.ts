@@ -18,28 +18,39 @@ export function initOneSignal(userId?: string) {
   window.OneSignalDeferred.push(async (OneSignal: any) => {
     if (isInitialized) return;
 
-    await OneSignal.init({
-      appId,
-      safari_web_id: "web.onesignal.auto.11a76d30-e2a9-4f46-9be9-382fbd4a01f1",
-      allowLocalhostAsSecureOrigin: true,
-      serviceWorkerPath: "OneSignalSDKWorker.js",
-      serviceWorkerParam: { scope: "/" },
-      notifyButton: {
-        enable: true,
-      },
-    });
+    try {
+      await OneSignal.init({
+        appId,
+        safari_web_id: "web.onesignal.auto.11a76d30-e2a9-4f46-9be9-382fbd4a01f1",
+        allowLocalhostAsSecureOrigin: true,
+        serviceWorkerPath: "OneSignalSDKWorker.js",
+        serviceWorkerParam: { scope: "/" },
+        notifyButton: {
+          enable: true,
+        },
+      });
+      isInitialized = true;
+    } catch (err: any) {
+      if (err?.message?.includes("already initialized")) {
+        isInitialized = true;
+      } else {
+        console.warn("[OneSignal] Initialization error:", err?.message || err);
+      }
+    }
 
-    isInitialized = true;
+    try {
+      if (isInitialized && OneSignal.User?.addTags) {
+        await OneSignal.User.addTags({
+          role: "admin",
+          app: "codey_dev_admin",
+        });
+      }
 
-    // Tag current user as admin
-    await OneSignal.User.addTags({
-      role: "admin",
-      app: "codey_dev_admin",
-    });
-
-    // If a Supabase user ID is provided, identify them with OneSignal
-    if (userId) {
-      await OneSignal.login(userId);
+      if (isInitialized && userId && OneSignal.login) {
+        await OneSignal.login(userId);
+      }
+    } catch (err) {
+      console.warn("[OneSignal] User setup warning:", err);
     }
   });
 }
