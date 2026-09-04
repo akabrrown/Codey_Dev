@@ -57,7 +57,7 @@ export default async function AdminLayout({
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <a
-              href="http://localhost:3000"
+              href={process.env.NEXT_PUBLIC_SITE_URL || "https://codeydev.vercel.app"}
               target="_blank"
               rel="noreferrer"
               className="btn btn-outline btn-sm"
