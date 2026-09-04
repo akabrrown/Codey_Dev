@@ -8,19 +8,7 @@ export const metadata: Metadata = {
   description: "Configure your project requirements and get an instant price estimate.",
 };
 
-async function loadServices() {
-  const apiUrl = process.env["NEXT_PUBLIC_API_URL"] ?? "http://localhost:3002";
-  try {
-    const res = await fetch(`${apiUrl}/api/v1/services`, {
-      next: { revalidate: 300 },
-    });
-    if (!res.ok) throw new Error();
-    const json = await res.json();
-    return json.data;
-  } catch {
-    return null;
-  }
-}
+import { loadServices } from "../../../lib/services";
 
 export default async function ServiceLayout({
   children,

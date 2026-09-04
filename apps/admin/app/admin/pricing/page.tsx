@@ -13,6 +13,7 @@ export default async function PricingPage() {
   try {
     const res = await fetch(`${API_URL}/api/v1/services`, {
       next: { revalidate: 60 },
+      signal: AbortSignal.timeout(3000),
     });
     if (res.ok) {
       const data = await res.json();

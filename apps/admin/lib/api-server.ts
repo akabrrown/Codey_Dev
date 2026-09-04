@@ -14,6 +14,7 @@ export async function fetchServerWithAuth(path: string, options: RequestInit = {
   }
 
   return fetch(`${API_URL}${path}`, {
+    signal: options.signal ?? AbortSignal.timeout(5000),
     ...options,
     headers,
   });

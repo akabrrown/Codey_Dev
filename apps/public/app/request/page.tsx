@@ -9,19 +9,7 @@ export const metadata: Metadata = {
   description: "Choose the type of project you need from Codey Dev.",
 };
 
-async function loadServices() {
-  const apiUrl = process.env["NEXT_PUBLIC_API_URL"] ?? "http://localhost:3002";
-  try {
-    const res = await fetch(`${apiUrl}/api/v1/services`, {
-      next: { revalidate: 300 }, // cache for 5 minutes
-    });
-    if (!res.ok) throw new Error("Services unavailable");
-    const json = await res.json();
-    return json.data;
-  } catch {
-    return null;
-  }
-}
+import { loadServices } from "../../lib/services";
 
 export default async function RequestPage() {
   const services = await loadServices();
