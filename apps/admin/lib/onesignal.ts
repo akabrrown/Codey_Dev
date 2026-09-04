@@ -58,22 +58,83 @@ export function initOneSignal(userId?: string) {
 export async function requestPushPermission(): Promise<boolean> {
   if (typeof window === "undefined") return false;
 
+  if (!("Notification" in window)) {
+    throw new Error("This browser does not support push notifications.");
+  }
+
+  if (Notification.permission === "denied") {
+    throw new Error(
+      "Notifications are currently blocked in your browser settings. Please click the site settings/lock icon in your address bar and toggle Notifications to 'Allow'."
+    );
+  }
+
   return new Promise((resolve) => {
+    // 6-second fallback to prevent UI hanging
+    const fallbackTimer = setTimeout(async () => {
+      try {
+        const perm = await Notification.requestPermission();
+        resolve(perm === "granted");
+      } catch {
+        resolve(false);
+      }
+    }, 6000);
+
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     window.OneSignalDeferred.push(async (OneSignal: any) => {
       try {
-        await OneSignal.Slidedown.promptPush();
-        const permission = await OneSignal.Notifications.permission;
-        resolve(permission === true || permission === "granted");
-      } catch (err) {
-        console.error("Failed to request push permission:", err);
-        resolve(false);
+        // Trigger native permission or SDK opt-in
+        if (OneSignal.Notifications?.requestPermission) {
+          await OneSignal.Notifications.requestPermission();
+        } else if (OneSignal.User?.PushSubscription?.optIn) {
+          await OneSignal.User.PushSubscription.optIn();
+        } else if (OneSignal.Slidedown?.promptPush) {
+          await OneSignal.Slidedown.promptPush();
+        } else {
+          await Notification.requestPermission();
+        }
+
+        clearTimeout(fallbackTimer);
+        const isGranted =
+          Notification.permission === "granted" ||
+          OneSignal.Notifications?.permission === true ||
+          OneSignal.User?.PushSubscription?.optedIn === true;
+
+        resolve(isGranted);
+      } catch (err: any) {
+        clearTimeout(fallbackTimer);
+        console.warn("[OneSignal] Request prompt error, falling back to native:", err);
+        try {
+          const perm = await Notification.requestPermission();
+          resolve(perm === "granted");
+        } catch {
+          resolve(false);
+        }
       }
     });
   });
 }
 
-export async function getPushPermissionState(): Promise<"granted" | "denied" | "default"> {
-  if (typeof window === "undefined" || !("Notification" in window)) return "default";
-  return Notification.permission as "granted" | "denied" | "default";
+export async function getPushPermissionState(): Promise<{
+  permission: "granted" | "denied" | "default";
+  subscriptionId?: string | null;
+  optedIn?: boolean;
+}> {
+  if (typeof window === "undefined" || !("Notification" in window)) {
+    return { permission: "default" };
+  }
+
+  const permission = Notification.permission as "granted" | "denied" | "default";
+  let subscriptionId: string | null = null;
+  let optedIn = false;
+
+  if (window.OneSignal?.User?.PushSubscription) {
+    try {
+      subscriptionId = window.OneSignal.User.PushSubscription.id || null;
+      optedIn = window.OneSignal.User.PushSubscription.optedIn || false;
+    } catch {
+      // Ignore
+    }
+  }
+
+  return { permission, subscriptionId, optedIn };
 }
