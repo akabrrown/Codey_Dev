@@ -7,7 +7,10 @@ interface OneSignalNotificationParams {
 }
 
 export async function sendOneSignalAdminNotification(params: OneSignalNotificationParams) {
-  const appId = process.env["ONESIGNAL_APP_ID"] || process.env["NEXT_PUBLIC_ONESIGNAL_APP_ID"];
+  const appId =
+    process.env["ONESIGNAL_APP_ID"] ||
+    process.env["NEXT_PUBLIC_ONESIGNAL_APP_ID"] ||
+    "7c0fb351-bfa1-4030-960f-23a4e48f3037";
   const apiKey = process.env["ONESIGNAL_REST_API_KEY"];
   const adminUrl = process.env["ADMIN_PORTAL_URL"] || "https://admincodeydev.vercel.app";
 

@@ -12,11 +12,7 @@ let isInitialized = false;
 export function initOneSignal(userId?: string) {
   if (typeof window === "undefined") return;
 
-  const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
-  if (!appId) {
-    console.warn("OneSignal: NEXT_PUBLIC_ONESIGNAL_APP_ID is not configured.");
-    return;
-  }
+  const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "7c0fb351-bfa1-4030-960f-23a4e48f3037";
 
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   window.OneSignalDeferred.push(async (OneSignal: any) => {
@@ -24,11 +20,12 @@ export function initOneSignal(userId?: string) {
 
     await OneSignal.init({
       appId,
+      safari_web_id: "web.onesignal.auto.11a76d30-e2a9-4f46-9be9-382fbd4a01f1",
       allowLocalhostAsSecureOrigin: true,
       serviceWorkerPath: "OneSignalSDKWorker.js",
       serviceWorkerParam: { scope: "/" },
       notifyButton: {
-        enable: false,
+        enable: true,
       },
     });
 
