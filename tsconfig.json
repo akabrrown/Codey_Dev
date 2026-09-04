@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/public" },
+    { "path": "./apps/admin" },
+    { "path": "./apps/api" },
+    { "path": "./packages/db" },
+    { "path": "./packages/engine" },
+    { "path": "./packages/validators" },
+    { "path": "./packages/email" }
+  ]
+}

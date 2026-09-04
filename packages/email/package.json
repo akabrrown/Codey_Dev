@@ -1,0 +1,18 @@
+{
+  "name": "@codey/email",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.31",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "@types/react": "^18.3.14"
+  }
+}
