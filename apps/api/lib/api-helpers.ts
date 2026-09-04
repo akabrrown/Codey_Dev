@@ -15,36 +15,41 @@ export function createAdminSupabaseClient() {
   }
 }
 
-/**
- * Verifies the Supabase Auth session from the Authorization header.
- * Returns the authenticated user or null if invalid/missing.
- */
 export async function getAuthenticatedUser(req: NextRequest) {
+  const result = await getAuthenticatedUserWithReason(req);
+  return result.user;
+}
+
+export async function getAuthenticatedUserWithReason(
+  req: NextRequest
+): Promise<{ user: any | null; reason: string | null }> {
   try {
     const authorization = req.headers.get("authorization");
     if (!authorization?.startsWith("Bearer ")) {
-      console.warn("getAuthenticatedUser: No Bearer token provided in request header.");
-      return null;
+      return { user: null, reason: "No Bearer token in request headers" };
     }
 
     const token = authorization.slice(7).trim();
-    if (!token) return null;
+    if (!token) {
+      return { user: null, reason: "Empty token after Bearer" };
+    }
 
     const supabase = createAdminSupabaseClient();
     if (!supabase) {
-      console.error("getAuthenticatedUser: createAdminSupabaseClient returned null.");
-      return null;
+      return { user: null, reason: "Supabase client initialization failed (missing URL or Key)" };
     }
 
     const { data, error } = await supabase.auth.getUser(token);
     if (error || !data?.user) {
-      console.error("getAuthenticatedUser auth.getUser failed:", error?.message || "User is null");
-      return null;
+      return {
+        user: null,
+        reason: `Supabase auth.getUser failed: ${error?.message || "User is null"} (status: ${error?.status || "unknown"})`,
+      };
     }
-    return data.user;
-  } catch (err) {
-    console.error("getAuthenticatedUser exception:", err);
-    return null;
+
+    return { user: data.user, reason: null };
+  } catch (err: any) {
+    return { user: null, reason: `Exception in getAuthenticatedUser: ${err?.message}` };
   }
 }
 

@@ -3,7 +3,7 @@ import { db } from "@codey/db";
 import { requests, services } from "@codey/db";
 import { RequestListQuerySchema } from "@codey/validators";
 import { eq, desc, asc, ilike, and, isNull, count } from "drizzle-orm";
-import { getAuthenticatedUser, apiResponse, apiError, getCorsHeaders } from "../../../../../lib/api-helpers";
+import { getAuthenticatedUserWithReason, apiResponse, apiError, getCorsHeaders } from "../../../../../lib/api-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +13,13 @@ export async function OPTIONS(req: Request) {
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await getAuthenticatedUser(req);
+    const { user, reason } = await getAuthenticatedUserWithReason(req);
     if (!user) {
-      return apiError("UNAUTHORIZED", "Authentication required.", { status: 401, req });
+      return apiError(
+        "UNAUTHORIZED",
+        `Authentication required (${reason || "Unauthorized"}).`,
+        { status: 401, req }
+      );
     }
 
     const { searchParams } = new URL(req.url);
