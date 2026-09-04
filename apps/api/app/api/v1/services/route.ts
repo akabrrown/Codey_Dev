@@ -4,6 +4,8 @@ import { services, serviceOptions } from "@codey/db";
 import { eq, and } from "drizzle-orm";
 import { apiResponse, getCorsHeaders } from "../../../../lib/api-helpers";
 
+export const dynamic = "force-dynamic";
+
 export async function OPTIONS(req: Request) {
   return new Response(null, { status: 204, headers: getCorsHeaders(req) });
 }

@@ -7,6 +7,8 @@ import { generateSignedDownloadUrl } from "../../../../../../../../lib/services/
 
 type RouteContext = { params: Promise<{ id: string; fileId: string }> };
 
+export const dynamic = "force-dynamic";
+
 export async function OPTIONS(req: Request) {
   return new Response(null, { status: 204, headers: getCorsHeaders(req) });
 }

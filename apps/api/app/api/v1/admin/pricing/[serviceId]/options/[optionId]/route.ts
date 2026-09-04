@@ -3,9 +3,11 @@ import { db } from "@codey/db";
 import { serviceOptions } from "@codey/db";
 import { UpdateServiceOptionSchema } from "@codey/validators";
 import { eq, and } from "drizzle-orm";
-import { getAuthenticatedUser, apiResponse, apiError, getCorsHeaders } from "@/lib/api-helpers";
+import { getAuthenticatedUser, apiResponse, apiError, getCorsHeaders } from "../../../../../../../../lib/api-helpers";
 
 type RouteContext = { params: Promise<{ serviceId: string; optionId: string }> };
+
+export const dynamic = "force-dynamic";
 
 export async function OPTIONS(req: Request) {
   return new Response(null, { status: 204, headers: getCorsHeaders(req) });

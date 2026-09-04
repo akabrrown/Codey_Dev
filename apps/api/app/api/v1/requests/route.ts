@@ -17,6 +17,8 @@ const ACCEPTED_MIME_TYPES = new Set([
   "image/png",
 ]);
 
+export const dynamic = "force-dynamic";
+
 export async function OPTIONS(req: Request) {
   return new Response(null, { status: 204, headers: getCorsHeaders(req) });
 }

@@ -5,6 +5,8 @@ import { RequestListQuerySchema } from "@codey/validators";
 import { eq, desc, asc, ilike, and, isNull, count } from "drizzle-orm";
 import { getAuthenticatedUser, apiResponse, apiError, getCorsHeaders } from "../../../../../lib/api-helpers";
 
+export const dynamic = "force-dynamic";
+
 export async function OPTIONS(req: Request) {
   return new Response(null, { status: 204, headers: getCorsHeaders(req) });
 }
