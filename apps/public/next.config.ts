@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@codey/engine", "@codey/validators", "@codey/db", "@codey/email"],
+  env: {
+    NEXT_PUBLIC_API_URL: process.env["NEXT_PUBLIC_API_URL"] ?? "",
+  },
   async headers() {
     return [
       {
