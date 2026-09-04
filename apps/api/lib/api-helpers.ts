@@ -2,8 +2,11 @@ import { createClient } from "@supabase/supabase-js";
 import type { NextRequest } from "next/server";
 
 export function createAdminSupabaseClient() {
-  const url = process.env["NEXT_PUBLIC_SUPABASE_URL"];
-  const key = process.env["SUPABASE_SERVICE_ROLE_KEY"];
+  const url = process.env["NEXT_PUBLIC_SUPABASE_URL"] || "https://dyxvorhvxiakhspxvhaf.supabase.co";
+  const key =
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] ||
+    process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"] ||
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5eHZvcmh2eGlha2hzcHh2aGFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODUwNjgwMiwiZXhwIjoyMTA0MDgyODAyfQ.9SHxlqjOaiSShQD0PJZG1pL4pfaGbIplW7RrUlyO9qM";
   if (!url || !key) return null;
   try {
     return createClient(url, key, { auth: { persistSession: false } });
@@ -19,17 +22,28 @@ export function createAdminSupabaseClient() {
 export async function getAuthenticatedUser(req: NextRequest) {
   try {
     const authorization = req.headers.get("authorization");
-    if (!authorization?.startsWith("Bearer ")) return null;
+    if (!authorization?.startsWith("Bearer ")) {
+      console.warn("getAuthenticatedUser: No Bearer token provided in request header.");
+      return null;
+    }
 
-    const token = authorization.slice(7);
+    const token = authorization.slice(7).trim();
+    if (!token) return null;
+
     const supabase = createAdminSupabaseClient();
-    if (!supabase) return null;
+    if (!supabase) {
+      console.error("getAuthenticatedUser: createAdminSupabaseClient returned null.");
+      return null;
+    }
 
     const { data, error } = await supabase.auth.getUser(token);
-    if (error || !data.user) return null;
+    if (error || !data?.user) {
+      console.error("getAuthenticatedUser auth.getUser failed:", error?.message || "User is null");
+      return null;
+    }
     return data.user;
   } catch (err) {
-    console.error("getAuthenticatedUser error:", err);
+    console.error("getAuthenticatedUser exception:", err);
     return null;
   }
 }
