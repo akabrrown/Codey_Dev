@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PushNotificationsCard from "./PushNotificationsCard";
 
 export const metadata: Metadata = {
   title: "Portal Settings",
@@ -17,6 +18,9 @@ export default function AdminSettingsPage() {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", maxWidth: "900px" }}>
+        {/* Push Notifications Card */}
+        <PushNotificationsCard />
+
         {/* Email Notifications */}
         <div className="card">
           <div className="card-header">

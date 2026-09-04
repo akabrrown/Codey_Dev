@@ -7,6 +7,7 @@ import { eq, inArray } from "drizzle-orm";
 import { submissionRateLimiter } from "../../../../lib/rate-limit";
 import { generateReferenceNo } from "../../../../lib/reference";
 import { sendAdminNewRequestNotification, sendCustomerConfirmation } from "../../../../lib/services/email";
+import { sendOneSignalAdminNotification } from "../../../../lib/services/onesignal";
 import { apiResponse, apiError, getCorsHeaders } from "../../../../lib/api-helpers";
 
 // Accepted MIME types — validated server-side, client validation is UX only
@@ -173,7 +174,7 @@ export async function POST(req: NextRequest) {
         note: "Request submitted via public portal",
       });
 
-      // Send notifications (outside transaction — email failure should not roll back the request)
+      // Send notifications (outside transaction — email/push failure should not roll back the request)
       await Promise.allSettled([
         sendAdminNewRequestNotification({
           referenceNo,
@@ -191,6 +192,16 @@ export async function POST(req: NextRequest) {
           serviceName: service.name,
           estimatedMin: estimate.min,
           estimatedMax: estimate.max,
+        }),
+        sendOneSignalAdminNotification({
+          title: `🚀 New Project: ${service.name}`,
+          message: `${input.customerName} submitted inquiry ${referenceNo} (Est: GH₵ ${estimate.min.toLocaleString()} – ${estimate.max.toLocaleString()})`,
+          url: `/admin/requests/${newRequest.id}`,
+          data: {
+            requestId: newRequest.id,
+            referenceNo,
+            serviceName: service.name,
+          },
         }),
       ]);
 

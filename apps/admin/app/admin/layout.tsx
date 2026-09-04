@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "../../lib/supabase-server";
 import AdminNavLinks from "./AdminNavLinks";
 import SignOutButton from "./SignOutButton";
+import OneSignalInitializer from "./OneSignalInitializer";
 
 export default async function AdminLayout({
   children,
@@ -20,6 +21,7 @@ export default async function AdminLayout({
 
   return (
     <div className="admin-layout">
+      <OneSignalInitializer userId={user.id} />
       {/* Sidebar */}
       <aside className="admin-sidebar" aria-label="Admin Navigation">
         <div className="sidebar-header">
