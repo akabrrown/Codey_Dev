@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { fetchWithAuth } from "../../lib/api-client";
 
@@ -34,6 +34,7 @@ export default function RequestsTableClient({
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const isFirstMount = useRef(true);
 
   const loadRequests = async (query = search, status = statusFilter, page = currentPage) => {
     setLoading(true);
@@ -62,6 +63,10 @@ export default function RequestsTableClient({
   };
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      if (initialRequests.length > 0 || initialMeta.total > 0) return;
+    }
     const timer = setTimeout(() => {
       loadRequests(search, statusFilter, currentPage);
     }, 300);

@@ -4,7 +4,13 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
 
 export async function fetchWithAuth(path: string, options: RequestInit = {}) {
   const supabase = createBrowserClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  let session = (await supabase.auth.getSession()).data.session;
+
+  if (!session?.access_token) {
+    const refreshed = await supabase.auth.refreshSession();
+    session = refreshed.data.session;
+  }
+
   const token = session?.access_token;
 
   const headers = new Headers(options.headers || {});

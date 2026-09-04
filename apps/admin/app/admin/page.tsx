@@ -1,11 +1,32 @@
 import type { Metadata } from "next";
+import { fetchServerWithAuth } from "../../lib/api-server";
 import RequestsTableClient from "./RequestsTableClient";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Quote Requests Queue",
 };
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  let initialRequests = [];
+  let initialMeta = { total: 0, page: 1, limit: 20, totalPages: 1 };
+
+  try {
+    const res = await fetchServerWithAuth("/api/v1/admin/requests?page=1&limit=20", {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success) {
+        initialRequests = json.data || [];
+        if (json.meta) initialMeta = json.meta;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load initial requests server-side:", err);
+  }
+
   return (
     <div>
       <div className="page-header">
@@ -17,7 +38,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <RequestsTableClient />
+      <RequestsTableClient initialRequests={initialRequests} initialMeta={initialMeta} />
     </div>
   );
 }
