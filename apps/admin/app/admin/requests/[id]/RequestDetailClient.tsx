@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { fetchWithAuth } from "../../../../lib/api-client";
@@ -56,11 +56,63 @@ export interface RequestDetailData {
   statusHistory: StatusLogEntry[];
 }
 
+interface CustomScopeItem {
+  id: string;
+  type: "page" | "feature" | "integration" | "general";
+  name: string;
+}
+
+function parseCustomScope(notes?: string | null): { cleanNotes: string; customItems: CustomScopeItem[] } {
+  if (!notes) return { cleanNotes: "", customItems: [] };
+
+  const customItems: CustomScopeItem[] = [];
+  const lines = notes.split("\n");
+  const cleanLines: string[] = [];
+  let inCustomSection = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i] ?? "";
+    if (line.includes("--- Custom Client Requests ---")) {
+      inCustomSection = true;
+      continue;
+    }
+    if (inCustomSection) {
+      if (line.trim().startsWith("•")) {
+        const match = line.match(/•\s*\[Custom\s+([A-Z]+)\]\s*(.*)/i);
+        if (match) {
+          const typeRaw = (match[1] || "").toLowerCase();
+          const type: CustomScopeItem["type"] =
+            typeRaw === "page" || typeRaw === "feature" || typeRaw === "integration"
+              ? typeRaw
+              : "general";
+          customItems.push({
+            id: `custom-${i}`,
+            type,
+            name: (match[2] || "").trim(),
+          });
+        } else {
+          customItems.push({
+            id: `custom-${i}`,
+            type: "general",
+            name: line.replace(/^[•\-\*]\s*/, "").trim(),
+          });
+        }
+      }
+    } else {
+      cleanLines.push(line);
+    }
+  }
+
+  return {
+    cleanNotes: cleanLines.join("\n").trim(),
+    customItems,
+  };
+}
+
 function sanitizeWhatsAppPhone(phone?: string | null): string | null {
   if (!phone) return null;
   let digits = phone.replace(/[^0-9]/g, "");
   if (!digits) return null;
-  // If Ghanaian local number starting with 0 (e.g. 024xxxxxxx -> 23324xxxxxxx)
   if (digits.startsWith("0")) {
     digits = "233" + digits.substring(1);
   }
@@ -103,6 +155,13 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
   const [priceAdjustmentReason, setPriceAdjustmentReason] = useState(data.priceAdjustmentReason || "");
   const [adminNotes, setAdminNotes] = useState(data.adminNotes || "");
 
+  // Custom Requirements Itemized Pricing Assistant state
+  const { cleanNotes, customItems } = useMemo(
+    () => parseCustomScope(data.projectDescription),
+    [data.projectDescription]
+  );
+  const [customItemPrices, setCustomItemPrices] = useState<Record<string, string>>({});
+
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -138,6 +197,31 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
       }).format(new Date(isoString));
     } catch {
       return isoString;
+    }
+  };
+
+  // ── Custom Scope Pricing Assistant Calculations ───────────────────────────
+  const customItemsTotal = useMemo(() => {
+    return Object.values(customItemPrices).reduce((sum, val) => {
+      const num = parseFloat(val);
+      return sum + (isNaN(num) ? 0 : num);
+    }, 0);
+  }, [customItemPrices]);
+
+  const recommendedTotal = useMemo(() => {
+    return Math.round(Number(data.estimatedMax) + customItemsTotal);
+  }, [data.estimatedMax, customItemsTotal]);
+
+  const handleApplyCustomPricing = () => {
+    setFinalPriceGhs(recommendedTotal.toString());
+    const pricedItems = customItems
+      .filter((item) => parseFloat(customItemPrices[item.id] || "0") > 0)
+      .map((item) => `${item.name} (+GH₵ ${parseFloat(customItemPrices[item.id] || "0").toLocaleString()})`);
+
+    if (pricedItems.length > 0) {
+      setPriceAdjustmentReason(
+        `Includes custom engineering scope: ${pricedItems.join(", ")}.`
+      );
     }
   };
 
@@ -199,7 +283,6 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
     setQuoteSuccessMsg(null);
 
     try {
-      // 1. Persist final price and update status to quote_sent
       await fetchWithAuth(`/api/v1/admin/requests/${data.id}`, {
         method: "PATCH",
         body: JSON.stringify({
@@ -211,12 +294,10 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
 
       setStatus("quote_sent");
 
-      // 2. Generate structured message
       const message = generateWhatsAppProposalMessage(data, finalPriceGhs, publicPortalUrl);
       const encoded = encodeURIComponent(message);
       const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encoded}`;
 
-      // 3. Open WhatsApp Web or App
       window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 
       setQuoteSuccessMsg(`WhatsApp proposal opened for +${whatsappPhone}! Status updated to Quote Sent.`);
@@ -258,7 +339,6 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
     setConfirmingEmailSend(false);
 
     try {
-      // Ensure price is saved first
       await fetchWithAuth(`/api/v1/admin/requests/${data.id}`, {
         method: "PATCH",
         body: JSON.stringify({
@@ -423,19 +503,89 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
               </span>
             </div>
             <div className="card-body">
-              {data.projectDescription && (
-                <div style={{ marginBottom: "1.5rem", padding: "1rem", backgroundColor: "var(--color-surface)", borderRadius: "var(--radius-md)" }}>
+              {/* Clean Client Brief */}
+              {cleanNotes && (
+                <div style={{ marginBottom: "1.25rem", padding: "1rem", backgroundColor: "var(--color-surface)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border)" }}>
                   <div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", textTransform: "uppercase", fontWeight: 600, marginBottom: "0.25rem" }}>
-                    Project Notes / Brief
+                    Client Project Brief / Notes
                   </div>
                   <div style={{ fontSize: "0.875rem", whiteSpace: "pre-wrap", color: "var(--color-text)" }}>
-                    {data.projectDescription}
+                    {cleanNotes}
+                  </div>
+                </div>
+              )}
+
+              {/* Detected Custom Unpriced Requirements */}
+              {customItems.length > 0 && (
+                <div style={{
+                  marginBottom: "1.5rem",
+                  padding: "1rem 1.25rem",
+                  backgroundColor: "rgba(0, 180, 216, 0.06)",
+                  border: "1px solid rgba(0, 180, 216, 0.3)",
+                  borderRadius: "var(--radius-md)",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span style={{
+                        display: "inline-block",
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor: "var(--color-teal, #00B4D8)",
+                      }} />
+                      <span style={{ fontSize: "0.8125rem", fontWeight: 700, color: "var(--color-navy-dark)", textTransform: "uppercase" }}>
+                        Custom Unlisted Requirements ({customItems.length})
+                      </span>
+                    </div>
+                    <Link
+                      href="/admin/pricing"
+                      style={{ fontSize: "0.75rem", color: "var(--color-navy-dark)", fontWeight: 600, textDecoration: "underline" }}
+                    >
+                      Add to Global Catalog →
+                    </Link>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    {customItems.map((item) => (
+                      <div
+                        key={item.id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "0.5rem 0.75rem",
+                          backgroundColor: "#FFFFFF",
+                          borderRadius: "var(--radius-sm)",
+                          border: "1px solid rgba(0, 180, 216, 0.2)",
+                          fontSize: "0.8125rem",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          <span style={{
+                            padding: "0.15rem 0.45rem",
+                            borderRadius: "4px",
+                            fontSize: "0.6875rem",
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            backgroundColor: item.type === "page" ? "#EFF6FF" : item.type === "feature" ? "#F0FDF4" : "#FAF5FF",
+                            color: item.type === "page" ? "#1D4ED8" : item.type === "feature" ? "#15803D" : "#7E22CE",
+                          }}>
+                            {item.type}
+                          </span>
+                          <span style={{ fontWeight: 600, color: "var(--color-navy-dark)" }}>
+                            {item.name}
+                          </span>
+                        </div>
+                        <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", fontStyle: "italic" }}>
+                          Pricing pending in assistant
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
 
               <h3 style={{ fontSize: "0.875rem", textTransform: "uppercase", color: "var(--color-text-muted)", marginBottom: "0.75rem" }}>
-                Selected Features & Add-ons
+                Selected Catalog Features & Add-ons
               </h3>
               {data.selections.length === 0 ? (
                 <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
@@ -571,11 +721,139 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
           </div>
         </div>
 
-        {/* Right Column: Quote Management & Multi-Channel Dispatch Suite */}
+        {/* Right Column: Pricing Form & Custom Scope Pricing Assistant */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          {/* ── Custom Scope Pricing Assistant (Rendered if client submitted custom items) ── */}
+          {customItems.length > 0 && (
+            <div className="card" style={{ borderTop: "4px solid var(--color-teal, #00B4D8)" }}>
+              <div className="card-header">
+                <div>
+                  <h2 className="card-title" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="1" x2="12" y2="23"></line>
+                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    Custom Scope Pricing Assistant
+                  </h2>
+                  <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", marginTop: "0.25rem" }}>
+                    Assign custom rates to unlisted client requests to calculate the recommended quote price.
+                  </p>
+                </div>
+              </div>
+              <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {customItems.map((item) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "0.75rem",
+                      padding: "0.625rem 0.875rem",
+                      backgroundColor: "var(--color-surface)",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid var(--color-border)",
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <span style={{
+                          padding: "0.1rem 0.4rem",
+                          borderRadius: "3px",
+                          fontSize: "0.625rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          backgroundColor: item.type === "page" ? "#EFF6FF" : item.type === "feature" ? "#F0FDF4" : "#FAF5FF",
+                          color: item.type === "page" ? "#1D4ED8" : item.type === "feature" ? "#15803D" : "#7E22CE",
+                        }}>
+                          {item.type}
+                        </span>
+                        <strong style={{ fontSize: "0.8125rem", color: "var(--color-navy-dark)" }}>
+                          {item.name}
+                        </strong>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+                      <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-text-muted)" }}>+ GH₵</span>
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        value={customItemPrices[item.id] || ""}
+                        onChange={(e) =>
+                          setCustomItemPrices((prev) => ({
+                            ...prev,
+                            [item.id]: e.target.value,
+                          }))
+                        }
+                        className="form-input"
+                        style={{ width: "90px", padding: "0.35rem 0.5rem", fontSize: "0.8125rem", textAlign: "right" }}
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                {/* Calculation Summary Bar */}
+                <div style={{
+                  padding: "0.875rem 1rem",
+                  backgroundColor: "#F8FAFC",
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid var(--color-border)",
+                  fontSize: "0.8125rem",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem", color: "var(--color-text-muted)" }}>
+                    <span>Catalog Baseline (Max):</span>
+                    <span>GH₵ {Number(data.estimatedMax).toLocaleString("en-GH")}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem", color: "var(--color-text-muted)" }}>
+                    <span>Custom Additions Sum:</span>
+                    <span style={{ color: "#059669", fontWeight: 600 }}>+ GH₵ {customItemsTotal.toLocaleString("en-GH")}</span>
+                  </div>
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    paddingTop: "0.5rem",
+                    borderTop: "1px dashed var(--color-border)",
+                    fontWeight: 700,
+                    color: "var(--color-navy-dark)",
+                    fontSize: "0.875rem",
+                  }}>
+                    <span>Recommended Quotation:</span>
+                    <span style={{ color: "var(--color-teal, #00B4D8)" }}>
+                      GH₵ {recommendedTotal.toLocaleString("en-GH")}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleApplyCustomPricing}
+                  className="btn btn-outline btn-sm"
+                  style={{
+                    width: "100%",
+                    padding: "0.6rem",
+                    fontWeight: 700,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.4rem",
+                    borderColor: "var(--color-teal, #00B4D8)",
+                    color: "var(--color-navy-dark)",
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>Apply Suggested Price & Reason</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Pricing & Form Card */}
           <div className="card" style={{ borderTop: "4px solid var(--color-navy-dark)" }}>
             <div className="card-header">
-              <h2 className="card-title">Quote Calculation & Pricing</h2>
+              <h2 className="card-title">Official Quotation & Lifecycle</h2>
             </div>
             <div className="card-body">
               {/* Calculated Range */}
@@ -593,7 +871,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                   {formatGHS(data.estimatedMin)} – {formatGHS(data.estimatedMax)}
                 </div>
                 <div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", marginTop: "0.25rem" }}>
-                  Based on current catalog base rate, selected options & timeline multiplier.
+                  Based on catalog base rate, selected options & timeline multiplier.
                 </div>
               </div>
 
@@ -681,7 +959,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Custom API integration complexity"
+                    placeholder="e.g. Includes custom AI Resume Parser & QuickBooks scope"
                     value={priceAdjustmentReason}
                     onChange={(e) => setPriceAdjustmentReason(e.target.value)}
                     className="form-input"
@@ -843,7 +1121,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                         gap: "0.35rem",
                       }}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                         <polyline points="22,6 12,13 2,6" />
                       </svg>
