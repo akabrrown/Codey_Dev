@@ -254,9 +254,13 @@ export default function RequestsTableClient({
             <Link
               href={`/admin/requests/${liveBanner.id}`}
               className="btn btn-primary btn-sm"
-              style={{ padding: "0.35rem 0.85rem", fontSize: "0.8125rem" }}
+              style={{ padding: "0.35rem 0.85rem", fontSize: "0.8125rem", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
             >
-              Review Now →
+              <span>Review Now</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
             </Link>
             <button
               onClick={() => setLiveBanner(null)}
@@ -266,11 +270,16 @@ export default function RequestsTableClient({
                 color: "#94A3B8",
                 cursor: "pointer",
                 padding: "0.25rem 0.5rem",
-                fontSize: "1rem",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
               title="Dismiss alert"
             >
-              ✕
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
             </button>
           </div>
         </div>
@@ -372,18 +381,29 @@ export default function RequestsTableClient({
               onClick={() => loadRequests(search, statusFilter, currentPage, false)}
               className="btn btn-outline btn-sm"
               title="Refresh requests list"
-              style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
               disabled={loading || isRefreshing}
             >
-              <span
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 style={{
-                  display: "inline-block",
                   animation: loading || isRefreshing ? "spin 1s linear infinite" : "none",
                 }}
+                aria-hidden="true"
               >
-                🔄
-              </span>
-              Refresh
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                <path d="M16 21h5v-5" />
+              </svg>
+              <span>Refresh</span>
             </button>
           </div>
         </div>
@@ -511,8 +531,16 @@ export default function RequestsTableClient({
                         {formatDate(req.createdAt)}
                       </td>
                       <td style={{ textAlign: "right" }}>
-                        <Link href={`/admin/requests/${req.id}`} className="btn btn-navy btn-sm">
-                          Review →
+                        <Link
+                          href={`/admin/requests/${req.id}`}
+                          className="btn btn-navy btn-sm"
+                          style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}
+                        >
+                          <span>Review</span>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                          </svg>
                         </Link>
                       </td>
                     </tr>

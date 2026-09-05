@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
         estimatedMax: estimate.max,
       }),
       sendOneSignalAdminNotification({
-        title: `🚀 New Project: ${service.name}`,
+        title: `New Project Inquiry: ${service.name}`,
         message: `${input.customerName} submitted inquiry ${referenceNo} (Est: GH₵ ${estimate.min.toLocaleString()} – ${estimate.max.toLocaleString()})`,
         url: `/admin/requests/${newRequest.id}`,
         data: {

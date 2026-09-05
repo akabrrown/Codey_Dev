@@ -76,19 +76,19 @@ function generateWhatsAppProposalMessage(data: RequestDetailData, finalPrice: st
         .join("\n")
     : "• Standard baseline project deliverables";
 
-  return `*OFFICIAL PROJECT QUOTE PROPOSAL — CODEY DEV* 🚀\n\n` +
+  return `*OFFICIAL PROJECT QUOTE PROPOSAL — CODEY DEV*\n\n` +
     `Hello *${data.customerName}*,\n\n` +
     `Thank you for requesting a project quote with *Codey Dev*. We have reviewed your project requirements and finalized your official proposal.\n\n` +
-    `📋 *Project Summary:*\n` +
+    `*Project Summary:*\n` +
     `• *Reference No:* ${data.referenceNo}\n` +
     `• *Service:* ${data.service?.name || "Custom Development"}\n` +
     (data.organization ? `• *Organization:* ${data.organization}\n` : "") +
     (data.timeline ? `• *Timeline:* ${data.timeline}\n` : "") +
-    `\n💰 *Total Investment:* *GH₵ ${priceFormatted}*\n\n` +
-    `📦 *Included Scope & Features:*\n${optionsList}\n\n` +
-    `🔗 *View Full Proposal & Accept Online:*\n${publicUrl}/request/confirmation/${data.referenceNo}\n\n` +
-    `💬 If you have any questions or wish to adjust any parameters, reply directly to this message. We are ready to build with you!\n\n` +
-    `— *Codey Dev Team*\n🌐 https://codeydev.vercel.app`;
+    `\n*Total Investment:* *GH₵ ${priceFormatted}*\n\n` +
+    (data.selections.length > 0 ? `*Included Scope & Features:*\n${optionsList}\n\n` : "") +
+    `*View Full Proposal & Accept Online:*\n${publicUrl}/request/confirmation/${data.referenceNo}\n\n` +
+    `If you have any questions or wish to adjust any parameters, reply directly to this message. We are ready to build with you!\n\n` +
+    `— *Codey Dev Team*\nhttps://codeydev.vercel.app`;
 }
 
 export default function RequestDetailClient({ initialData }: { initialData: RequestDetailData }) {
@@ -326,7 +326,11 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
             marginBottom: "0.75rem",
           }}
         >
-          ← Back to All Requests
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          <span>Back to All Requests</span>
         </Link>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
@@ -797,10 +801,25 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        gap: "0.35rem",
+                        gap: "0.4rem",
                       }}
                     >
-                      <span>{copiedWhatsApp ? "✓ Copied to Clipboard!" : "📋 Copy Proposal Text"}</span>
+                      {copiedWhatsApp ? (
+                        <>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          <span style={{ color: "#16A34A", fontWeight: 600 }}>Copied to Clipboard!</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          </svg>
+                          <span>Copy Proposal Text</span>
+                        </>
+                      )}
                     </button>
 
                     {/* Dispatch via Email */}
@@ -824,7 +843,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                         gap: "0.35rem",
                       }}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                         <polyline points="22,6 12,13 2,6" />
                       </svg>
@@ -883,7 +902,10 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                         borderColor: "var(--color-navy-dark)",
                       }}
                     >
-                      <span>🚀 Dispatch Both (Email + WhatsApp)</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                      </svg>
+                      <span>Dispatch Both (Email + WhatsApp)</span>
                     </button>
                   )}
                 </div>

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await sendOneSignalAdminNotification({
-      title: "🚀 Test Notification from Codey Dev",
+      title: "Test Notification from Codey Dev",
       message: "OneSignal push notifications are working! You will now receive instant alerts for new client inquiries.",
       url: "/admin",
       data: { type: "test" },

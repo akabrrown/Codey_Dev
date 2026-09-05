@@ -100,7 +100,7 @@ export async function sendAdminNewRequestNotification(params: {
 
   return sendWithResend({
     to: recipients,
-    subject: `🚨 New Project Request [${params.referenceNo}] — ${params.serviceName} (${params.customerName})`,
+    subject: `New Project Request [${params.referenceNo}] — ${params.serviceName} (${params.customerName})`,
     html,
   });
 }
