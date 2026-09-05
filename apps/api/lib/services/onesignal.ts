@@ -33,9 +33,11 @@ export async function sendOneSignalAdminNotification(params: OneSignalNotificati
     url: destinationUrl,
     web_url: destinationUrl,
     app_url: destinationUrl,
-    chrome_web_icon: "https://codeydev.vercel.app/icon.svg",
-    chrome_web_badge: "https://codeydev.vercel.app/icon.svg",
-    firefox_icon: "https://codeydev.vercel.app/icon.svg",
+    chrome_web_icon: "https://codeydev.vercel.app/notification-icon.png",
+    chrome_web_badge: "https://codeydev.vercel.app/notification-icon.png",
+    firefox_icon: "https://codeydev.vercel.app/notification-icon.png",
+    small_icon: "https://codeydev.vercel.app/notification-icon.png",
+    large_icon: "https://codeydev.vercel.app/notification-icon.png",
     data: {
       url: destinationUrl,
       ...params.data,
@@ -44,7 +46,7 @@ export async function sendOneSignalAdminNotification(params: OneSignalNotificati
       {
         id: "view-request",
         text: "View Request →",
-        icon: "https://codeydev.vercel.app/icon.svg",
+        icon: "https://codeydev.vercel.app/notification-icon.png",
         url: destinationUrl,
       },
     ],
