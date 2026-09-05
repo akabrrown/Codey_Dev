@@ -1,14 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useFormContext } from "../../../../lib/form-context";
 import { formatPriceRange } from "@codey/engine";
 
 export default function TimelinePage() {
   const { formState, services, estimatedMin, estimatedMax, toggleOption } = useFormContext();
   const router = useRouter();
+  const params = useParams<{ service: string }>();
 
-  const service = services.find((s) => s.slug === formState.serviceSlug);
+  const service = services.find(
+    (s) => s.slug === (formState.serviceSlug || params?.service)
+  );
   if (!service) {
     return (
       <div className="container" style={{ padding: "var(--space-10) 0" }}>

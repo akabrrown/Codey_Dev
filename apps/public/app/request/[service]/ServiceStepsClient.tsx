@@ -11,5 +11,9 @@ export default function ServiceStepsClient({
   services: ServiceData[];
   serviceSlug: string;
 }) {
-  return <FormProvider services={services}>{children}</FormProvider>;
+  return (
+    <FormProvider services={services} initialServiceSlug={serviceSlug}>
+      {children}
+    </FormProvider>
+  );
 }

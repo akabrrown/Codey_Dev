@@ -82,25 +82,62 @@ const emptyForm: FormState = {
 
 const FormContext = createContext<FormContextValue | null>(null);
 
-export function FormProvider({ children, services }: { children: React.ReactNode; services: ServiceData[] }) {
-  const [formState, setFormState] = useState<FormState>(() => {
-    if (typeof window === "undefined") return emptyForm;
+export function FormProvider({
+  children,
+  services,
+  initialServiceSlug,
+}: {
+  children: React.ReactNode;
+  services: ServiceData[];
+  initialServiceSlug?: string;
+}) {
+  const initialService = initialServiceSlug
+    ? services.find((s) => s.slug === initialServiceSlug)
+    : undefined;
+
+  const defaultState: FormState = initialService
+    ? {
+        ...emptyForm,
+        serviceId: initialService.id,
+        serviceSlug: initialService.slug,
+        serviceName: initialService.name,
+        basePriceMin: Number(initialService.basePriceMin),
+        basePriceMax: Number(initialService.basePriceMax),
+      }
+    : emptyForm;
+
+  const [formState, setFormState] = useState<FormState>(defaultState);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Restore persisted state after mount to eliminate SSR hydration mismatch
+  useEffect(() => {
+    setIsHydrated(true);
     try {
       const stored = sessionStorage.getItem(STORAGE_KEY);
-      return stored ? (JSON.parse(stored) as FormState) : emptyForm;
+      if (stored) {
+        const parsed = JSON.parse(stored) as FormState;
+        if (initialServiceSlug) {
+          if (parsed.serviceSlug === initialServiceSlug) {
+            setFormState(parsed);
+          }
+        } else if (parsed.serviceSlug) {
+          setFormState(parsed);
+        }
+      }
     } catch {
-      return emptyForm;
+      // sessionStorage unavailable — continue without persistence
     }
-  });
+  }, [initialServiceSlug]);
 
-  // Persist to sessionStorage on every change so back-navigation doesn't lose selections
+  // Persist to sessionStorage on every change once mounted
   useEffect(() => {
+    if (!isHydrated) return;
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(formState));
     } catch {
       // sessionStorage unavailable — continue without persistence
     }
-  }, [formState]);
+  }, [formState, isHydrated]);
 
   const estimate = (() => {
     if (!formState.serviceId) return { min: 0, max: 0 };

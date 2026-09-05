@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useFormContext } from "../../../../lib/form-context";
 import { formatPriceRange } from "@codey/engine";
 
@@ -33,13 +33,16 @@ export default function DetailsPage() {
   } = useFormContext();
 
   const router = useRouter();
+  const params = useParams<{ service: string }>();
   const [errors, setErrors] = useState<FormErrors>({});
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const service = services.find((s) => s.slug === formState.serviceSlug);
+  const service = services.find(
+    (s) => s.slug === (formState.serviceSlug || params?.service)
+  );
   const priceDisplay = estimatedMin === 0
     ? "Select options above"
     : formatPriceRange({ min: estimatedMin, max: estimatedMax });

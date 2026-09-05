@@ -1,13 +1,15 @@
 "use client";
 
+import { use } from "react";
 import { useRouter } from "next/navigation";
 import { useFormContext } from "../../../lib/form-context";
 
 export default function SubTypePage({ params }: { params: Promise<{ service: string }> }) {
+  const { service: routeSlug } = use(params);
   const { formState, services, toggleOption } = useFormContext();
   const router = useRouter();
 
-  const service = services.find((s) => s.slug === formState.serviceSlug);
+  const service = services.find((s) => s.slug === (formState.serviceSlug || routeSlug));
   if (!service) {
     return (
       <div className="container" style={{ padding: "var(--space-10) 0" }}>

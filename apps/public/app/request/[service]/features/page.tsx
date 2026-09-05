@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useFormContext } from "../../../../lib/form-context";
 import { formatPriceRange } from "@codey/engine";
 
@@ -13,8 +13,11 @@ const OPTION_TYPE_GROUPS: Record<string, string> = {
 export default function FeaturesPage() {
   const { formState, services, estimatedMin, estimatedMax, toggleOption } = useFormContext();
   const router = useRouter();
+  const params = useParams<{ service: string }>();
 
-  const service = services.find((s) => s.slug === formState.serviceSlug);
+  const service = services.find(
+    (s) => s.slug === (formState.serviceSlug || params?.service)
+  );
 
   if (!service) {
     return (
