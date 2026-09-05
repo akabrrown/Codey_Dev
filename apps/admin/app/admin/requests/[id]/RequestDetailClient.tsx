@@ -184,6 +184,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
   );
   const [customItemPrices, setCustomItemPrices] = useState<Record<string, string>>({});
 
+  const [recipientPhone, setRecipientPhone] = useState(data.customerPhone || "");
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -197,7 +198,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
   const publicPortalUrl = process.env.NEXT_PUBLIC_PUBLIC_PORTAL_URL || "https://codeydev.vercel.app";
-  const whatsappPhone = sanitizeWhatsAppPhone(data.customerPhone);
+  const whatsappPhone = sanitizeWhatsAppPhone(recipientPhone || data.customerPhone);
 
   const formatGHS = (amount: number | string) => {
     const val = typeof amount === "string" ? parseFloat(amount) : amount;
@@ -291,52 +292,67 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
 
   // ── Dispatch via WhatsApp ──────────────────────────────────────────────────
   const handleSendWhatsApp = async () => {
-    if (!finalPriceGhs.trim()) {
-      setQuoteError("Please enter a Final Quotation Price (GH₵) before sending the proposal.");
+    const effectivePrice =
+      finalPriceGhs.trim() ||
+      (data.finalPrice ? Number(data.finalPrice).toString() : data.estimatedMin.toString());
+
+    if (!finalPriceGhs.trim() && !data.finalPrice) {
+      setQuoteError("Please enter a Final Quotation Price (GH₵) in the form above before dispatching the proposal.");
+      const priceInput = document.getElementById("final-price-input");
+      if (priceInput) priceInput.focus();
       return;
     }
 
-    if (!whatsappPhone) {
-      setQuoteError("No valid phone number was provided for this client to send via WhatsApp.");
+    const targetPhone = sanitizeWhatsAppPhone(recipientPhone || data.customerPhone);
+    if (!targetPhone) {
+      setQuoteError("Please provide a valid client phone/WhatsApp number (e.g. 024 000 0000) below.");
+      const phoneInput = document.getElementById("whatsapp-recipient-phone");
+      if (phoneInput) phoneInput.focus();
       return;
     }
 
     setQuoteError(null);
     setQuoteSuccessMsg(null);
 
+    const message = generateWhatsAppProposalMessage(data, effectivePrice, publicPortalUrl);
+    const encoded = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${targetPhone}?text=${encoded}`;
+
+    // Open WhatsApp IMMEDIATELY inside the user click gesture to avoid browser popup blockers
+    const win = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    if (!win) {
+      // Fallback if browser extensions or policy blocked window.open
+      window.location.assign(whatsappUrl);
+    }
+
+    setQuoteSuccessMsg(`WhatsApp proposal opened for +${targetPhone}! Updating status to Quote Sent...`);
+
     try {
+      const priceVal = parseFloat(effectivePrice);
       await fetchWithAuth(`/api/v1/admin/requests/${data.id}`, {
         method: "PATCH",
         body: JSON.stringify({
           status: "quote_sent",
-          finalPrice: parseFloat(finalPriceGhs),
+          finalPrice: isNaN(priceVal) ? undefined : priceVal,
           priceAdjustmentReason: priceAdjustmentReason.trim() || undefined,
         }),
       });
 
       setStatus("quote_sent");
-
-      const message = generateWhatsAppProposalMessage(data, finalPriceGhs, publicPortalUrl);
-      const encoded = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encoded}`;
-
-      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-
-      setQuoteSuccessMsg(`WhatsApp proposal opened for +${whatsappPhone}! Status updated to Quote Sent.`);
+      setQuoteSuccessMsg(`WhatsApp proposal successfully dispatched for +${targetPhone}! Lifecycle status updated to Quote Sent.`);
       router.refresh();
     } catch (err) {
-      setQuoteError(err instanceof Error ? err.message : "Failed to initiate WhatsApp dispatch.");
+      console.warn("Could not save quote_sent status in background:", err);
     }
   };
 
   // ── Copy WhatsApp Proposal text to Clipboard ────────────────────────────────
   const handleCopyWhatsAppText = async () => {
-    if (!finalPriceGhs.trim()) {
-      setQuoteError("Please enter a Final Quotation Price (GH₵) before copying the proposal text.");
-      return;
-    }
+    const effectivePrice =
+      finalPriceGhs.trim() ||
+      (data.finalPrice ? Number(data.finalPrice).toString() : data.estimatedMin.toString());
 
-    const message = generateWhatsAppProposalMessage(data, finalPriceGhs, publicPortalUrl);
+    const message = generateWhatsAppProposalMessage(data, effectivePrice, publicPortalUrl);
     try {
       await navigator.clipboard.writeText(message);
       setCopiedWhatsApp(true);
@@ -962,6 +978,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                       GH₵
                     </span>
                     <input
+                      id="final-price-input"
                       type="number"
                       step="any"
                       placeholder="e.g. 5500"
@@ -971,9 +988,6 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                       style={{ paddingLeft: "3.25rem" }}
                     />
                   </div>
-                  <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", marginTop: "0.25rem", display: "block" }}>
-                    The exact price to appear on the formal quotation issued to the client.
-                  </span>
                 </div>
 
                 <div>
@@ -982,11 +996,14 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Includes custom AI Resume Parser & QuickBooks scope"
+                    placeholder="e.g., Added custom portal dashboard and priority SLA"
                     value={priceAdjustmentReason}
                     onChange={(e) => setPriceAdjustmentReason(e.target.value)}
                     className="form-input"
                   />
+                  <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", marginTop: "0.25rem", display: "block" }}>
+                    Required when a final quote price is specified.
+                  </span>
                 </div>
 
                 <div>
@@ -994,8 +1011,8 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                     Internal Admin Notes
                   </label>
                   <textarea
-                    rows={3}
-                    placeholder="Private notes for the engineering and management team..."
+                    rows={4}
+                    placeholder="Private engineering notes, client history, or scope considerations..."
                     value={adminNotes}
                     onChange={(e) => setAdminNotes(e.target.value)}
                     className="form-textarea"
@@ -1006,7 +1023,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                   type="submit"
                   disabled={saving}
                   className="btn btn-navy"
-                  style={{ width: "100%", padding: "0.75rem" }}
+                  style={{ width: "100%", justifyContent: "center" }}
                 >
                   {saving ? "Saving Changes..." : "Save Pricing & Notes"}
                 </button>
@@ -1019,9 +1036,30 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                 <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-navy-dark)", marginBottom: "0.35rem" }}>
                   Client Proposal Dispatch
                 </h3>
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", marginBottom: "1.25rem" }}>
-                  Dispatch the finalized quote proposal (<strong>{finalPriceGhs ? `GH₵ ${Number(finalPriceGhs).toLocaleString("en-GH")}` : "[Price not set]"}</strong>) directly to the client via WhatsApp or Email.
+                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", marginBottom: "1rem" }}>
+                  Dispatch the finalized quote proposal (<strong>{finalPriceGhs ? `GH₵ ${Number(finalPriceGhs).toLocaleString("en-GH")}` : data.finalPrice ? `GH₵ ${Number(data.finalPrice).toLocaleString("en-GH")}` : `GH₵ ${Number(data.estimatedMin).toLocaleString("en-GH")} (Est. Base)`}</strong>) directly to the client via WhatsApp or Email.
                 </p>
+
+                {/* Recipient WhatsApp Phone Input */}
+                <div style={{ marginBottom: "1rem" }}>
+                  <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--color-text-muted)", marginBottom: "0.35rem" }}>
+                    Recipient WhatsApp Number
+                  </label>
+                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                    <input
+                      id="whatsapp-recipient-phone"
+                      type="tel"
+                      placeholder="e.g. 0244123456 or 233244123456"
+                      value={recipientPhone}
+                      onChange={(e) => setRecipientPhone(e.target.value)}
+                      className="form-input"
+                      style={{ fontSize: "0.875rem" }}
+                    />
+                  </div>
+                  <span style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", marginTop: "0.25rem", display: "block" }}>
+                    {whatsappPhone ? `Formatted destination: +${whatsappPhone}` : "Enter standard Ghana mobile number (020, 024, 050, 054, etc.)"}
+                  </span>
+                </div>
 
                 {quoteSuccessMsg && (
                   <div style={{
@@ -1058,11 +1096,10 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                 )}
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                  {/* Primary WhatsApp Action */}
+                  {/* Primary WhatsApp Action Button */}
                   <button
                     type="button"
                     onClick={handleSendWhatsApp}
-                    disabled={!finalPriceGhs.trim() || !whatsappPhone}
                     className="btn"
                     style={{
                       backgroundColor: "#25D366",
@@ -1075,8 +1112,8 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                       justifyContent: "center",
                       gap: "0.6rem",
                       boxShadow: "0 4px 12px rgba(37, 211, 102, 0.25)",
-                      cursor: !finalPriceGhs.trim() || !whatsappPhone ? "not-allowed" : "pointer",
-                      opacity: !finalPriceGhs.trim() || !whatsappPhone ? 0.65 : 1,
+                      cursor: "pointer",
+                      width: "100%",
                     }}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF">
@@ -1085,16 +1122,35 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                     <span>
                       {whatsappPhone
                         ? `Dispatch Proposal via WhatsApp (+${whatsappPhone})`
-                        : "No WhatsApp Phone Provided"}
+                        : "Dispatch Proposal via WhatsApp"}
                     </span>
                   </button>
+
+                  {/* Direct Native Link Fallback */}
+                  {whatsappPhone && (
+                    <div style={{ textAlign: "center", fontSize: "0.75rem" }}>
+                      <a
+                        href={`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(
+                          generateWhatsAppProposalMessage(
+                            data,
+                            finalPriceGhs.trim() || (data.finalPrice ? Number(data.finalPrice).toString() : data.estimatedMin.toString()),
+                            publicPortalUrl
+                          )
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "#059669", textDecoration: "underline", fontWeight: 500 }}
+                      >
+                        Direct browser link: Open in WhatsApp Web / App &rarr;
+                      </a>
+                    </div>
+                  )}
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                     {/* Copy Proposal Text */}
                     <button
                       type="button"
                       onClick={handleCopyWhatsAppText}
-                      disabled={!finalPriceGhs.trim()}
                       className="btn btn-outline btn-sm"
                       style={{
                         padding: "0.6rem 0.75rem",
@@ -1127,13 +1183,13 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                     <button
                       type="button"
                       onClick={() => {
-                        if (!finalPriceGhs.trim()) {
+                        if (!finalPriceGhs.trim() && !data.finalPrice) {
                           setQuoteError("Please enter a Final Quote Price before sending via email.");
                           return;
                         }
                         setConfirmingEmailSend(true);
                       }}
-                      disabled={sendingQuote || !finalPriceGhs.trim()}
+                      disabled={sendingQuote}
                       className="btn btn-navy btn-sm"
                       style={{
                         padding: "0.6rem 0.75rem",
