@@ -32,6 +32,12 @@ export interface UploadedFile {
   fileSizeBytes: number;
 }
 
+export interface CustomRequirement {
+  id: string;
+  name: string;
+  type: "page" | "feature" | "integration";
+}
+
 export interface FormState {
   serviceId: string;
   serviceSlug: string;
@@ -39,6 +45,7 @@ export interface FormState {
   basePriceMin: number;
   basePriceMax: number;
   selectedOptionIds: string[];
+  customRequirements: CustomRequirement[];
   contactName: string;
   contactPhone: string;
   contactEmail: string;
@@ -55,6 +62,8 @@ interface FormContextValue {
   estimatedMax: number;
   setService: (service: ServiceData) => void;
   toggleOption: (optionId: string, options: ServiceOption[]) => void;
+  addCustomRequirement: (name: string, type: "page" | "feature" | "integration") => void;
+  removeCustomRequirement: (id: string) => void;
   setContact: (fields: Partial<Pick<FormState, "contactName" | "contactPhone" | "contactEmail" | "businessName" | "notes">>) => void;
   setTermsAccepted: (v: boolean) => void;
   addFile: (file: UploadedFile) => void;
@@ -71,6 +80,7 @@ const emptyForm: FormState = {
   basePriceMin: 0,
   basePriceMax: 0,
   selectedOptionIds: [],
+  customRequirements: [],
   contactName: "",
   contactPhone: "",
   contactEmail: "",
@@ -203,6 +213,26 @@ export function FormProvider({
     });
   }, []);
 
+  const addCustomRequirement = useCallback((name: string, type: "page" | "feature" | "integration") => {
+    if (!name.trim()) return;
+    const newItem: CustomRequirement = {
+      id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      name: name.trim(),
+      type,
+    };
+    setFormState((prev) => ({
+      ...prev,
+      customRequirements: [...prev.customRequirements, newItem],
+    }));
+  }, []);
+
+  const removeCustomRequirement = useCallback((id: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      customRequirements: prev.customRequirements.filter((item) => item.id !== id),
+    }));
+  }, []);
+
   const setContact = useCallback(
     (fields: Partial<Pick<FormState, "contactName" | "contactPhone" | "contactEmail" | "businessName" | "notes">>) => {
       setFormState((prev) => ({ ...prev, ...fields }));
@@ -242,6 +272,8 @@ export function FormProvider({
         estimatedMax: estimate.max,
         setService,
         toggleOption,
+        addCustomRequirement,
+        removeCustomRequirement,
         setContact,
         setTermsAccepted,
         addFile,

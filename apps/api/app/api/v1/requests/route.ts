@@ -118,6 +118,17 @@ export async function POST(req: NextRequest) {
     // ── Generate reference number ─────────────────────────────────────────────
     const referenceNo = generateReferenceNo();
 
+    // Format notes with any custom client requirements
+    let combinedNotes = input.notes || "";
+    if (input.customRequirements && input.customRequirements.length > 0) {
+      const customSummary = input.customRequirements
+        .map((item) => `• [Custom ${item.type.toUpperCase()}] ${item.name}`)
+        .join("\n");
+      combinedNotes = combinedNotes
+        ? `${combinedNotes}\n\n--- Custom Client Requests ---\n${customSummary}`
+        : `--- Custom Client Requests ---\n${customSummary}`;
+    }
+
     // ── Persist to database ───────────────────────────────────────────────────
     await db.transaction(async (tx) => {
       const [newRequest] = await tx
@@ -129,7 +140,7 @@ export async function POST(req: NextRequest) {
           customerPhone: input.customerPhone,
           customerEmail: input.customerEmail,
           businessName: input.businessName,
-          notes: input.notes,
+          notes: combinedNotes || null,
           estimatedMin: String(estimate.min),
           estimatedMax: String(estimate.max),
           termsAccepted: input.termsAccepted,

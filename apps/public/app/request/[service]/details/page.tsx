@@ -124,6 +124,10 @@ export default function DetailsPage() {
         body: JSON.stringify({
           serviceId: formState.serviceId,
           selectedOptionIds: formState.selectedOptionIds,
+          customRequirements: formState.customRequirements.map((c) => ({
+            name: c.name,
+            type: c.type,
+          })),
           customerName: formState.contactName,
           customerPhone: formState.contactPhone,
           customerEmail: formState.contactEmail,
@@ -401,6 +405,42 @@ export default function DetailsPage() {
               </p>
               <p className="estimate-panel__label" style={{ marginBottom: "var(--space-1)" }}>Estimated range</p>
               <p className="estimate-panel__range">{priceDisplay}</p>
+              {formState.customRequirements.length > 0 && (
+                <div
+                  style={{
+                    marginTop: "var(--space-3)",
+                    paddingTop: "var(--space-3)",
+                    borderTop: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                >
+                  <p
+                    style={{
+                      color: "var(--color-teal)",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      margin: "0 0 var(--space-2)",
+                    }}
+                  >
+                    Custom Additions ({formState.customRequirements.length})
+                  </p>
+                  {formState.customRequirements.map((item) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: "0.8125rem",
+                        color: "rgba(255,255,255,0.8)",
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      <span>• {item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <p
                 style={{
                   color: "rgba(255,255,255,0.4)",

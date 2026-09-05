@@ -48,6 +48,16 @@ export const SubmitRequestSchema = z.object({
   termsAccepted: z.literal(true, {
     errorMap: () => ({ message: "You must accept the Terms & Conditions to proceed" }),
   }),
+  customRequirements: z
+    .array(
+      z.object({
+        name: z.string().trim().min(1).max(200),
+        type: z.enum(["page", "feature", "integration"]),
+      })
+    )
+    .max(20, "You can add up to 20 custom items")
+    .optional()
+    .default([]),
   // Cloudinary public IDs submitted after successful upload
   uploadedFileIds: z
     .array(
