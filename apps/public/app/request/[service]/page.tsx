@@ -1,11 +1,11 @@
 "use client";
 
-import { use } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useFormContext } from "../../../lib/form-context";
 
-export default function SubTypePage({ params }: { params: Promise<{ service: string }> }) {
-  const { service: routeSlug } = use(params);
+export default function SubTypePage() {
+  const params = useParams<{ service: string }>();
+  const routeSlug = params?.service;
   const { formState, services, toggleOption } = useFormContext();
   const router = useRouter();
 
