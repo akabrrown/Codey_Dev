@@ -5,8 +5,7 @@ export function createAdminSupabaseClient() {
   const url = process.env["NEXT_PUBLIC_SUPABASE_URL"] || "https://dyxvorhvxiakhspxvhaf.supabase.co";
   const key =
     process.env["SUPABASE_SERVICE_ROLE_KEY"] ||
-    process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"] ||
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR5eHZvcmh2eGlha2hzcHh2aGFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODUwNjgwMiwiZXhwIjoyMTA0MDgyODAyfQ.9SHxlqjOaiSShQD0PJZG1pL4pfaGbIplW7RrUlyO9qM";
+    process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
   if (!url || !key) return null;
   try {
     return createClient(url, key, { auth: { persistSession: false } });

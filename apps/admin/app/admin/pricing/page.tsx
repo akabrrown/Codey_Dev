@@ -12,7 +12,7 @@ export default async function PricingPage() {
 
   try {
     const res = await fetch(`${API_URL}/api/v1/services`, {
-      next: { revalidate: 60 },
+      next: { revalidate: 60, tags: ["services-catalog"] },
       signal: AbortSignal.timeout(3000),
     });
     if (res.ok) {

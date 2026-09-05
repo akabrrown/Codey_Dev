@@ -48,7 +48,12 @@ export async function GET(req: NextRequest) {
       options: allOptions.filter((o) => o.serviceId === svc.id),
     }));
 
-    return apiResponse(servicesWithOptions, { req, headers: getCorsHeaders(req) });
+    const headers = {
+      ...getCorsHeaders(req),
+      "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600",
+    };
+
+    return apiResponse(servicesWithOptions, { req, headers });
   } catch (error: any) {
     console.error("GET /api/v1/services error:", error);
     return apiResponse([], { req, headers: getCorsHeaders(req) });
