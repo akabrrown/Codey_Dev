@@ -15,9 +15,22 @@ export interface RequestItem {
   estimatedMin: number;
   estimatedMax: number;
   finalPrice?: number | null;
-  status: "submitted" | "in_review" | "quote_sent" | "approved" | "declined" | "archived" | "new" | "reviewed" | "accepted";
+  status: string;
   isRead: boolean;
   createdAt: string;
+}
+
+export function normalizeRequestStatus(val: string | null | undefined): string {
+  if (!val) return "new";
+  const lower = val.toLowerCase().trim();
+  const map: Record<string, string> = {
+    submitted: "new",
+    in_review: "reviewed",
+    approved: "accepted",
+    rejected: "declined",
+    archived: "declined",
+  };
+  return map[lower] || lower;
 }
 
 // Synthesized soft chime using Web Audio API (zero external asset dependency)
@@ -524,8 +537,8 @@ export default function RequestsTableClient({
                         </span>
                       </td>
                       <td>
-                        <span className={`badge badge-${req.status}`}>
-                          {req.status.replace("_", " ")}
+                        <span className={`badge badge-${normalizeRequestStatus(req.status)}`}>
+                          {normalizeRequestStatus(req.status).replace("_", " ")}
                         </span>
                       </td>
                       <td style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>

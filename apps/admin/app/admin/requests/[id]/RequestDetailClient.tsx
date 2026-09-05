@@ -143,12 +143,34 @@ function generateWhatsAppProposalMessage(data: RequestDetailData, finalPrice: st
     `— *Codey Dev Team*\nhttps://codeydev.vercel.app`;
 }
 
+export type CanonicalRequestStatus =
+  | "new"
+  | "reviewed"
+  | "quote_sent"
+  | "accepted"
+  | "declined"
+  | "in_progress"
+  | "completed";
+
+export function normalizeRequestStatus(val: string | null | undefined): CanonicalRequestStatus {
+  if (!val) return "new";
+  const lower = val.toLowerCase().trim();
+  const map: Record<string, CanonicalRequestStatus> = {
+    submitted: "new",
+    in_review: "reviewed",
+    approved: "accepted",
+    rejected: "declined",
+    archived: "declined",
+  };
+  return map[lower] || (lower as CanonicalRequestStatus);
+}
+
 export default function RequestDetailClient({ initialData }: { initialData: RequestDetailData }) {
   const router = useRouter();
   const [data, setData] = useState<RequestDetailData>(initialData);
 
   // Form edit states
-  const [status, setStatus] = useState(data.status);
+  const [status, setStatus] = useState<CanonicalRequestStatus>(normalizeRequestStatus(data.status));
   const [finalPriceGhs, setFinalPriceGhs] = useState<string>(
     data.finalPrice ? Number(data.finalPrice).toString() : ""
   );
