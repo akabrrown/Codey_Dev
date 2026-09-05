@@ -43,7 +43,7 @@ export interface RequestDetailData {
   finalPrice?: string | null;
   priceAdjustmentReason?: string | null;
   adminNotes?: string | null;
-  status: "submitted" | "in_review" | "quote_sent" | "approved" | "declined" | "archived";
+  status: "submitted" | "in_review" | "quote_sent" | "approved" | "declined" | "archived" | "new" | "reviewed" | "accepted";
   createdAt: string;
   service?: {
     id: string;
@@ -54,6 +54,41 @@ export interface RequestDetailData {
   selections: ServiceOptionSelection[];
   files: RequestFileItem[];
   statusHistory: StatusLogEntry[];
+}
+
+function sanitizeWhatsAppPhone(phone?: string | null): string | null {
+  if (!phone) return null;
+  let digits = phone.replace(/[^0-9]/g, "");
+  if (!digits) return null;
+  // If Ghanaian local number starting with 0 (e.g. 024xxxxxxx -> 23324xxxxxxx)
+  if (digits.startsWith("0")) {
+    digits = "233" + digits.substring(1);
+  }
+  return digits;
+}
+
+function generateWhatsAppProposalMessage(data: RequestDetailData, finalPrice: string, publicUrl: string): string {
+  const priceFormatted = Number(finalPrice || data.finalPrice || data.estimatedMin).toLocaleString("en-GH");
+  
+  const optionsList = data.selections.length > 0
+    ? data.selections
+        .map((s) => `• *${s.labelAtTime}*${s.isMultiplierAtTime ? ` (${s.multiplierValueAtTime}x)` : Number(s.priceImpactAtTime) > 0 ? ` (GH₵ ${Number(s.priceImpactAtTime).toLocaleString()})` : ""}`)
+        .join("\n")
+    : "• Standard baseline project deliverables";
+
+  return `*OFFICIAL PROJECT QUOTE PROPOSAL — CODEY DEV* 🚀\n\n` +
+    `Hello *${data.customerName}*,\n\n` +
+    `Thank you for requesting a project quote with *Codey Dev*. We have reviewed your project requirements and finalized your official proposal.\n\n` +
+    `📋 *Project Summary:*\n` +
+    `• *Reference No:* ${data.referenceNo}\n` +
+    `• *Service:* ${data.service?.name || "Custom Development"}\n` +
+    (data.organization ? `• *Organization:* ${data.organization}\n` : "") +
+    (data.timeline ? `• *Timeline:* ${data.timeline}\n` : "") +
+    `\n💰 *Total Investment:* *GH₵ ${priceFormatted}*\n\n` +
+    `📦 *Included Scope & Features:*\n${optionsList}\n\n` +
+    `🔗 *View Full Proposal & Accept Online:*\n${publicUrl}/request/confirmation/${data.referenceNo}\n\n` +
+    `💬 If you have any questions or wish to adjust any parameters, reply directly to this message. We are ready to build with you!\n\n` +
+    `— *Codey Dev Team*\n🌐 https://codeydev.vercel.app`;
 }
 
 export default function RequestDetailClient({ initialData }: { initialData: RequestDetailData }) {
@@ -73,11 +108,15 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const [sendingQuote, setSendingQuote] = useState(false);
-  const [quoteSuccess, setQuoteSuccess] = useState(false);
+  const [quoteSuccessMsg, setQuoteSuccessMsg] = useState<string | null>(null);
   const [quoteError, setQuoteError] = useState<string | null>(null);
+  const [copiedWhatsApp, setCopiedWhatsApp] = useState(false);
 
   const [downloadingFileId, setDownloadingFileId] = useState<string | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  const publicPortalUrl = process.env.NEXT_PUBLIC_PUBLIC_PORTAL_URL || "https://codeydev.vercel.app";
+  const whatsappPhone = sanitizeWhatsAppPhone(data.customerPhone);
 
   const formatGHS = (amount: number | string) => {
     const val = typeof amount === "string" ? parseFloat(amount) : amount;
@@ -102,8 +141,8 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
     }
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setSaving(true);
     setSaveSuccess(false);
     setSaveError(null);
@@ -135,44 +174,122 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
 
       setSaveSuccess(true);
       router.refresh();
+      return true;
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Failed to save updates.");
+      return false;
     } finally {
       setSaving(false);
     }
   };
 
-  const [confirmingSend, setConfirmingSend] = useState(false);
-
-  const executeSendQuote = async () => {
+  // ── Dispatch via WhatsApp ──────────────────────────────────────────────────
+  const handleSendWhatsApp = async () => {
     if (!finalPriceGhs.trim()) {
-      setQuoteError("Please enter and save a Final Quote Price before sending the quote to the client.");
+      setQuoteError("Please enter a Final Quotation Price (GH₵) before sending the proposal.");
+      return;
+    }
+
+    if (!whatsappPhone) {
+      setQuoteError("No valid phone number was provided for this client to send via WhatsApp.");
+      return;
+    }
+
+    setQuoteError(null);
+    setQuoteSuccessMsg(null);
+
+    try {
+      // 1. Persist final price and update status to quote_sent
+      await fetchWithAuth(`/api/v1/admin/requests/${data.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          status: "quote_sent",
+          finalPrice: parseFloat(finalPriceGhs),
+          priceAdjustmentReason: priceAdjustmentReason.trim() || undefined,
+        }),
+      });
+
+      setStatus("quote_sent");
+
+      // 2. Generate structured message
+      const message = generateWhatsAppProposalMessage(data, finalPriceGhs, publicPortalUrl);
+      const encoded = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encoded}`;
+
+      // 3. Open WhatsApp Web or App
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
+      setQuoteSuccessMsg(`WhatsApp proposal opened for +${whatsappPhone}! Status updated to Quote Sent.`);
+      router.refresh();
+    } catch (err) {
+      setQuoteError(err instanceof Error ? err.message : "Failed to initiate WhatsApp dispatch.");
+    }
+  };
+
+  // ── Copy WhatsApp Proposal text to Clipboard ────────────────────────────────
+  const handleCopyWhatsAppText = async () => {
+    if (!finalPriceGhs.trim()) {
+      setQuoteError("Please enter a Final Quotation Price (GH₵) before copying the proposal text.");
+      return;
+    }
+
+    const message = generateWhatsAppProposalMessage(data, finalPriceGhs, publicPortalUrl);
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopiedWhatsApp(true);
+      setTimeout(() => setCopiedWhatsApp(false), 3000);
+    } catch {
+      setQuoteError("Unable to copy to clipboard automatically. Please check browser permissions.");
+    }
+  };
+
+  // ── Dispatch via Email ──────────────────────────────────────────────────────
+  const [confirmingEmailSend, setConfirmingEmailSend] = useState(false);
+
+  const executeSendEmailQuote = async () => {
+    if (!finalPriceGhs.trim()) {
+      setQuoteError("Please enter and save a Final Quote Price before sending the quote.");
       return;
     }
 
     setSendingQuote(true);
-    setQuoteSuccess(false);
+    setQuoteSuccessMsg(null);
     setQuoteError(null);
-    setConfirmingSend(false);
+    setConfirmingEmailSend(false);
 
     try {
+      // Ensure price is saved first
+      await fetchWithAuth(`/api/v1/admin/requests/${data.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          status: "quote_sent",
+          finalPrice: parseFloat(finalPriceGhs),
+        }),
+      });
+
       const res = await fetchWithAuth(`/api/v1/admin/requests/${data.id}/send-quote`, {
         method: "POST",
       });
 
       const resData = await res.json();
       if (!res.ok || !resData.success) {
-        throw new Error(resData.error?.message || "Failed to send quote.");
+        throw new Error(resData.error?.message || "Failed to dispatch email quote.");
       }
 
-      setQuoteSuccess(true);
+      setQuoteSuccessMsg(`Quote proposal successfully dispatched to ${data.customerEmail}`);
       setStatus("quote_sent");
       router.refresh();
     } catch (err) {
-      setQuoteError(err instanceof Error ? err.message : "Failed to send quote.");
+      setQuoteError(err instanceof Error ? err.message : "Failed to send email quote.");
     } finally {
       setSendingQuote(false);
     }
+  };
+
+  // ── Dispatch Both Email and WhatsApp ─────────────────────────────────────────
+  const handleSendBoth = async () => {
+    await executeSendEmailQuote();
+    handleSendWhatsApp();
   };
 
   const handleDownloadFile = async (fileId: string) => {
@@ -258,9 +375,23 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                 <div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", textTransform: "uppercase", fontWeight: 600 }}>
                   Phone / WhatsApp
                 </div>
-                <div style={{ fontWeight: 500, marginTop: "0.25rem" }}>
-                  {data.customerPhone ? (
-                    <a href={`https://wa.me/${data.customerPhone.replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer" style={{ color: "#16A34A" }}>
+                <div style={{ fontWeight: 500, marginTop: "0.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  {whatsappPhone ? (
+                    <a
+                      href={`https://wa.me/${whatsappPhone}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        color: "#059669",
+                        fontWeight: 600,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.3rem",
+                      }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#059669">
+                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z" />
+                      </svg>
                       {data.customerPhone} (WhatsApp)
                     </a>
                   ) : (
@@ -436,11 +567,11 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
           </div>
         </div>
 
-        {/* Right Column: Quote Management & Actions */}
+        {/* Right Column: Quote Management & Multi-Channel Dispatch Suite */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           <div className="card" style={{ borderTop: "4px solid var(--color-navy-dark)" }}>
             <div className="card-header">
-              <h2 className="card-title">Quote Calculation & Actions</h2>
+              <h2 className="card-title">Quote Calculation & Pricing</h2>
             </div>
             <div className="card-body">
               {/* Calculated Range */}
@@ -558,7 +689,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                     Internal Admin Notes
                   </label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     placeholder="Private notes for the engineering and management team..."
                     value={adminNotes}
                     onChange={(e) => setAdminNotes(e.target.value)}
@@ -572,23 +703,22 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                   className="btn btn-navy"
                   style={{ width: "100%", padding: "0.75rem" }}
                 >
-                  {saving ? "Saving Changes..." : "Save Updates"}
+                  {saving ? "Saving Changes..." : "Save Pricing & Notes"}
                 </button>
               </form>
 
               <hr style={{ margin: "1.75rem 0", borderColor: "var(--color-border)" }} />
 
-              {/* Quote Dispatch Section */}
+              {/* ── Multi-Channel Quote Dispatch Suite ── */}
               <div>
-                <h3 style={{ fontSize: "1rem", fontWeight: 600, color: "var(--color-navy-dark)", marginBottom: "0.5rem" }}>
-                  Official Client Quote Dispatch
+                <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-navy-dark)", marginBottom: "0.35rem" }}>
+                  Client Proposal Dispatch
                 </h3>
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", marginBottom: "1rem" }}>
-                  Dispatches a formal proposal email directly to {data.customerEmail} with the fixed price of{" "}
-                  <strong>{finalPriceGhs ? `GH₵ ${finalPriceGhs}` : "[Not set]"}</strong> and comprehensive terms.
+                <p style={{ fontSize: "0.8125rem", color: "var(--color-text-muted)", marginBottom: "1.25rem" }}>
+                  Dispatch the finalized quote proposal (<strong>{finalPriceGhs ? `GH₵ ${Number(finalPriceGhs).toLocaleString("en-GH")}` : "[Price not set]"}</strong>) directly to the client via WhatsApp or Email.
                 </p>
 
-                {quoteSuccess && (
+                {quoteSuccessMsg && (
                   <div style={{
                     padding: "0.75rem 1rem",
                     backgroundColor: "#DCFCE7",
@@ -604,7 +734,7 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    <span>Quote proposal successfully dispatched to {data.customerEmail}</span>
+                    <span>{quoteSuccessMsg}</span>
                   </div>
                 )}
 
@@ -622,59 +752,141 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                   </div>
                 )}
 
-                {confirmingSend ? (
-                  <div style={{
-                    padding: "1rem",
-                    backgroundColor: "#FEF3C7",
-                    border: "1px solid #FCD34D",
-                    borderRadius: "var(--radius-md)",
-                    marginBottom: "0.5rem",
-                  }}>
-                    <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "#92400E", marginBottom: "0.75rem" }}>
-                      Send official quote of GH₵ {finalPriceGhs} to {data.customerEmail}?
-                    </p>
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button
-                        type="button"
-                        onClick={executeSendQuote}
-                        disabled={sendingQuote}
-                        className="btn btn-primary"
-                        style={{ flex: 1, padding: "0.5rem", fontSize: "0.8125rem", fontWeight: 700 }}
-                      >
-                        {sendingQuote ? "Sending..." : "Yes, Dispatch Proposal"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setConfirmingSend(false)}
-                        disabled={sendingQuote}
-                        className="btn btn-secondary"
-                        style={{ padding: "0.5rem 1rem", fontSize: "0.8125rem" }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                  {/* Primary WhatsApp Action */}
                   <button
                     type="button"
-                    onClick={() => {
-                      if (!finalPriceGhs.trim()) {
-                        setQuoteError("Please enter and save a Final Quote Price before sending the quote to the client.");
-                        return;
-                      }
-                      setConfirmingSend(true);
+                    onClick={handleSendWhatsApp}
+                    disabled={!finalPriceGhs.trim() || !whatsappPhone}
+                    className="btn"
+                    style={{
+                      backgroundColor: "#25D366",
+                      color: "#FFFFFF",
+                      border: "none",
+                      padding: "0.875rem 1rem",
+                      fontWeight: 700,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.6rem",
+                      boxShadow: "0 4px 12px rgba(37, 211, 102, 0.25)",
+                      cursor: !finalPriceGhs.trim() || !whatsappPhone ? "not-allowed" : "pointer",
+                      opacity: !finalPriceGhs.trim() || !whatsappPhone ? 0.65 : 1,
                     }}
-                    disabled={sendingQuote || !finalPriceGhs.trim()}
-                    className="btn btn-primary"
-                    style={{ width: "100%", padding: "0.75rem", fontWeight: 700, display: "inline-flex", justifyContent: "center", alignItems: "center", gap: "0.5rem" }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF">
+                      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z" />
                     </svg>
-                    <span>{sendingQuote ? "Dispatching quote proposal..." : "Send official quote to client"}</span>
+                    <span>
+                      {whatsappPhone
+                        ? `Dispatch Proposal via WhatsApp (+${whatsappPhone})`
+                        : "No WhatsApp Phone Provided"}
+                    </span>
                   </button>
-                )}
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
+                    {/* Copy Proposal Text */}
+                    <button
+                      type="button"
+                      onClick={handleCopyWhatsAppText}
+                      disabled={!finalPriceGhs.trim()}
+                      className="btn btn-outline btn-sm"
+                      style={{
+                        padding: "0.6rem 0.75rem",
+                        fontSize: "0.8125rem",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.35rem",
+                      }}
+                    >
+                      <span>{copiedWhatsApp ? "✓ Copied to Clipboard!" : "📋 Copy Proposal Text"}</span>
+                    </button>
+
+                    {/* Dispatch via Email */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!finalPriceGhs.trim()) {
+                          setQuoteError("Please enter a Final Quote Price before sending via email.");
+                          return;
+                        }
+                        setConfirmingEmailSend(true);
+                      }}
+                      disabled={sendingQuote || !finalPriceGhs.trim()}
+                      className="btn btn-navy btn-sm"
+                      style={{
+                        padding: "0.6rem 0.75rem",
+                        fontSize: "0.8125rem",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.35rem",
+                      }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                      <span>{sendingQuote ? "Sending..." : "Send via Email"}</span>
+                    </button>
+                  </div>
+
+                  {confirmingEmailSend && (
+                    <div style={{
+                      padding: "0.875rem",
+                      backgroundColor: "#FEF3C7",
+                      border: "1px solid #FCD34D",
+                      borderRadius: "var(--radius-md)",
+                      marginTop: "0.5rem",
+                    }}>
+                      <p style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#92400E", marginBottom: "0.5rem" }}>
+                        Dispatch email proposal with GH₵ {finalPriceGhs} to {data.customerEmail}?
+                      </p>
+                      <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <button
+                          type="button"
+                          onClick={executeSendEmailQuote}
+                          disabled={sendingQuote}
+                          className="btn btn-primary btn-sm"
+                          style={{ flex: 1 }}
+                        >
+                          {sendingQuote ? "Sending..." : "Confirm & Send"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmingEmailSend(false)}
+                          disabled={sendingQuote}
+                          className="btn btn-secondary btn-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Send Both Email & WhatsApp */}
+                  {whatsappPhone && (
+                    <button
+                      type="button"
+                      onClick={handleSendBoth}
+                      disabled={sendingQuote || !finalPriceGhs.trim()}
+                      className="btn btn-outline btn-sm"
+                      style={{
+                        padding: "0.6rem 0.75rem",
+                        fontSize: "0.8125rem",
+                        fontWeight: 600,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.4rem",
+                        borderColor: "var(--color-navy-dark)",
+                      }}
+                    >
+                      <span>🚀 Dispatch Both (Email + WhatsApp)</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
