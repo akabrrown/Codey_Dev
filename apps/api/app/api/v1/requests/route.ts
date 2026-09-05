@@ -130,8 +130,8 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Persist to database ───────────────────────────────────────────────────
-    await db.transaction(async (tx) => {
-      const [newRequest] = await tx
+    const newRequest = await db.transaction(async (tx) => {
+      const [inserted] = await tx
         .insert(requests)
         .values({
           referenceNo,
@@ -148,13 +148,13 @@ export async function POST(req: NextRequest) {
         })
         .returning({ id: requests.id });
 
-      if (!newRequest) throw new Error("Failed to create request");
+      if (!inserted) throw new Error("Failed to create request record");
 
       // Snapshot selected options with their price at time of submission
       if (selectedOptions.length > 0) {
         await tx.insert(requestSelections).values(
           selectedOptions.map((o) => ({
-            requestId: newRequest.id,
+            requestId: inserted.id,
             serviceOptionId: o.id,
             priceImpactAtTime: o.priceImpact,
             isMultiplierAtTime: o.isMultiplier,
@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
       if (input.uploadedFileIds.length > 0) {
         await tx.insert(requestFiles).values(
           input.uploadedFileIds.map((f) => ({
-            requestId: newRequest.id,
+            requestId: inserted.id,
             cloudinaryPublicId: f.cloudinaryPublicId,
             fileName: f.fileName,
             fileType: f.fileType,
@@ -179,44 +179,55 @@ export async function POST(req: NextRequest) {
 
       // Write initial status_log entry
       await tx.insert(statusLog).values({
-        requestId: newRequest.id,
+        requestId: inserted.id,
         fromStatus: null,
         toStatus: "new",
         note: "Request submitted via public portal",
       });
 
-      // Send notifications (outside transaction — email/push failure should not roll back the request)
-      await Promise.allSettled([
-        sendAdminNewRequestNotification({
-          referenceNo,
-          serviceName: service.name,
-          customerName: input.customerName,
-          customerEmail: input.customerEmail,
-          customerPhone: input.customerPhone,
-          estimatedMin: estimate.min,
-          estimatedMax: estimate.max,
-        }),
-        sendCustomerConfirmation({
-          referenceNo,
-          customerName: input.customerName,
-          customerEmail: input.customerEmail,
-          serviceName: service.name,
-          estimatedMin: estimate.min,
-          estimatedMax: estimate.max,
-        }),
-        sendOneSignalAdminNotification({
-          title: `🚀 New Project: ${service.name}`,
-          message: `${input.customerName} submitted inquiry ${referenceNo} (Est: GH₵ ${estimate.min.toLocaleString()} – ${estimate.max.toLocaleString()})`,
-          url: `/admin/requests/${newRequest.id}`,
-          data: {
-            requestId: newRequest.id,
-            referenceNo,
-            serviceName: service.name,
-          },
-        }),
-      ]);
+      return inserted;
+    });
 
-      return newRequest;
+    // ── Asynchronous Multi-Channel Notifications (outside DB transaction) ───────
+    const notificationResults = await Promise.allSettled([
+      sendAdminNewRequestNotification({
+        referenceNo,
+        serviceName: service.name,
+        customerName: input.customerName,
+        customerEmail: input.customerEmail,
+        customerPhone: input.customerPhone,
+        estimatedMin: estimate.min,
+        estimatedMax: estimate.max,
+      }),
+      sendCustomerConfirmation({
+        referenceNo,
+        customerName: input.customerName,
+        customerEmail: input.customerEmail,
+        serviceName: service.name,
+        estimatedMin: estimate.min,
+        estimatedMax: estimate.max,
+      }),
+      sendOneSignalAdminNotification({
+        title: `🚀 New Project: ${service.name}`,
+        message: `${input.customerName} submitted inquiry ${referenceNo} (Est: GH₵ ${estimate.min.toLocaleString()} – ${estimate.max.toLocaleString()})`,
+        url: `/admin/requests/${newRequest.id}`,
+        data: {
+          requestId: newRequest.id,
+          referenceNo,
+          serviceName: service.name,
+        },
+      }),
+    ]);
+
+    notificationResults.forEach((res, idx) => {
+      const label = idx === 0 ? "Admin Email Notification" : idx === 1 ? "Customer Email Confirmation" : "OneSignal Push";
+      if (res.status === "rejected") {
+        console.error(`[NOTIFICATION ERROR] ${label} rejected:`, res.reason);
+      } else if (res.value && (res.value as any).error) {
+        console.error(`[NOTIFICATION ERROR] ${label} returned error:`, (res.value as any).error);
+      } else {
+        console.log(`[NOTIFICATION SUCCESS] ${label} dispatched successfully.`);
+      }
     });
 
     return apiResponse(
