@@ -366,15 +366,16 @@ export default function RequestsTableClient({
                 setCurrentPage(1);
               }}
               className="form-select"
-              style={{ width: "150px", padding: "0.5rem 0.75rem" }}
+              style={{ width: "160px", padding: "0.5rem 0.75rem" }}
             >
               <option value="all">All Statuses</option>
-              <option value="submitted">Submitted / New</option>
-              <option value="in_review">In Review</option>
+              <option value="new">New / Submitted</option>
+              <option value="reviewed">Reviewed (In Review)</option>
               <option value="quote_sent">Quote Sent</option>
-              <option value="approved">Approved</option>
+              <option value="accepted">Accepted (Approved)</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
               <option value="declined">Declined</option>
-              <option value="archived">Archived</option>
             </select>
 
             <button

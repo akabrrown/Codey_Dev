@@ -2,7 +2,15 @@ import { z } from "zod";
 
 // ─── Enums matching DB schema ──────────────────────────────────────────────────
 
-export const RequestStatusSchema = z.enum([
+const STATUS_ALIASES: Record<string, string> = {
+  submitted: "new",
+  in_review: "reviewed",
+  approved: "accepted",
+  rejected: "declined",
+  archived: "declined",
+};
+
+export const CanonicalRequestStatusSchema = z.enum([
   "new",
   "reviewed",
   "quote_sent",
@@ -11,6 +19,15 @@ export const RequestStatusSchema = z.enum([
   "in_progress",
   "completed",
 ]);
+
+export const RequestStatusSchema = z.preprocess((val) => {
+  if (typeof val === "string") {
+    const lower = val.toLowerCase().trim();
+    if (STATUS_ALIASES[lower]) return STATUS_ALIASES[lower];
+    return lower;
+  }
+  return val;
+}, CanonicalRequestStatusSchema);
 
 export const OptionTypeSchema = z.enum([
   "page",

@@ -913,12 +913,13 @@ export default function RequestDetailClient({ initialData }: { initialData: Requ
                     onChange={(e) => setStatus(e.target.value as any)}
                     className="form-select"
                   >
-                    <option value="submitted">Submitted (New)</option>
-                    <option value="in_review">In Review</option>
+                    <option value="new">New (Submitted)</option>
+                    <option value="reviewed">Reviewed (In Review)</option>
                     <option value="quote_sent">Quote Sent</option>
-                    <option value="approved">Approved</option>
+                    <option value="accepted">Accepted (Approved)</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
                     <option value="declined">Declined</option>
-                    <option value="archived">Archived</option>
                   </select>
                 </div>
 
