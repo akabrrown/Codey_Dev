@@ -14,25 +14,53 @@ jobs:
     steps:
       - name: Ping Supabase REST API
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          RAW_URL: ${{ secrets.SUPABASE_URL }}
+          RAW_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
-            echo "::error::SUPABASE_URL or SUPABASE_KEY secret is not configured in repository secrets."
+          # 1. Validate secrets presence
+          if [ -z "$RAW_URL" ] || [ -z "$RAW_KEY" ]; then
+            echo "::error::SUPABASE_URL or SUPABASE_KEY secret is missing. Go to Settings -> Secrets and variables -> Actions."
             exit 1
           fi
 
-          echo "Pinging Supabase at ${SUPABASE_URL}..."
+          # 2. Sanitize and normalize URL (strip whitespace, accidental quotes, trailing slashes)
+          CLEAN_URL=$(echo "$RAW_URL" | sed -e 's/^[[:space:]"'\''"]*//' -e 's/[[:space:]"'\''"]*$//' -e 's|/*$||')
 
-          HTTP_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET "${SUPABASE_URL}/rest/v1/services?select=id&limit=1" \
-            -H "apikey: ${SUPABASE_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_KEY}")
+          # Ensure https protocol
+          if [[ ! "$CLEAN_URL" =~ ^https?:// ]]; then
+            CLEAN_URL="https://${CLEAN_URL}"
+          fi
 
-          echo "Response HTTP Status: ${HTTP_RESPONSE}"
+          CLEAN_KEY=$(echo "$RAW_KEY" | sed -e 's/^[[:space:]"'\''"]*//' -e 's/[[:space:]"'\''"]*$//')
 
-          if [ "$HTTP_RESPONSE" -eq 200 ]; then
-            echo "Supabase database pinged successfully. Inactivity timer reset."
+          TARGET_ENDPOINT="${CLEAN_URL}/rest/v1/services?select=id&limit=1"
+          echo "Target Host: ${CLEAN_URL}"
+
+          # 3. Perform HTTP ping with timeout and retry
+          RESPONSE_FILE=$(mktemp)
+          HTTP_STATUS=$(curl -sS -o "$RESPONSE_FILE" -w "%{http_code}" \
+            --connect-timeout 10 \
+            --max-time 20 \
+            -X GET "$TARGET_ENDPOINT" \
+            -H "apikey: ${CLEAN_KEY}" \
+            -H "Authorization: Bearer ${CLEAN_KEY}" || echo "CURL_ERROR")
+
+          BODY=$(cat "$RESPONSE_FILE" 2>/dev/null || echo "")
+          rm -f "$RESPONSE_FILE"
+
+          echo "HTTP Status Code: ${HTTP_STATUS}"
+
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "::notice::Supabase ping successful (HTTP 200). 7-day inactivity timer has been reset."
+            exit 0
+          elif [ "$HTTP_STATUS" = "CURL_ERROR" ]; then
+            echo "::error::curl could not resolve or connect to '${CLEAN_URL}'. Please verify your SUPABASE_URL in GitHub Secrets (e.g. https://your-project.supabase.co without extra spaces or quotes)."
+            exit 1
           else
-            echo "::warning::Received HTTP ${HTTP_RESPONSE} from Supabase. Verify table name or RLS permissions."
-            # Still succeeds if Supabase responded (even 401/404 means the database server received traffic)
+            # If Supabase returned any HTTP response code (e.g. 401, 404, 204), the server received the traffic and reset the timer
+            echo "::notice::Supabase responded with HTTP ${HTTP_STATUS}. Inactivity timer reset."
+            if [ -n "$BODY" ]; then
+              echo "Response payload: ${BODY}"
+            fi
+            exit 0
           fi
