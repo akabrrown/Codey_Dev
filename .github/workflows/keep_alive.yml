@@ -1,0 +1,38 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Runs daily at 00:00 UTC (Supabase pauses after 7 days of inactivity)
+    - cron: '0 0 * * *'
+  # Allows manual triggering from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  ping-database:
+    name: Ping Supabase Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::error::SUPABASE_URL or SUPABASE_KEY secret is not configured in repository secrets."
+            exit 1
+          fi
+
+          echo "Pinging Supabase at ${SUPABASE_URL}..."
+
+          HTTP_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET "${SUPABASE_URL}/rest/v1/services?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}")
+
+          echo "Response HTTP Status: ${HTTP_RESPONSE}"
+
+          if [ "$HTTP_RESPONSE" -eq 200 ]; then
+            echo "Supabase database pinged successfully. Inactivity timer reset."
+          else
+            echo "::warning::Received HTTP ${HTTP_RESPONSE} from Supabase. Verify table name or RLS permissions."
+            # Still succeeds if Supabase responded (even 401/404 means the database server received traffic)
+          fi
