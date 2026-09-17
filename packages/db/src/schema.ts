@@ -24,6 +24,12 @@ export const RequestStatus = pgEnum("request_status", [
   "completed",
 ]);
 
+export const ReviewStatus = pgEnum("review_status", [
+  "pending",
+  "approved",
+  "declined",
+]);
+
 export const OptionType = pgEnum("option_type", [
   "page",
   "feature",
@@ -176,6 +182,26 @@ export const statusLog = pgTable(
   ]
 );
 
+// ─── reviews ──────────────────────────────────────────────────────────────────
+
+export const reviews = pgTable(
+  "reviews",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    customerName: text("customer_name").notNull(),
+    companyName: text("company_name"),
+    rating: integer("rating").notNull().default(5),
+    content: text("content").notNull(),
+    status: ReviewStatus("status").notNull().default("pending"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("idx_reviews_status").on(t.status),
+    index("idx_reviews_created_at").on(t.createdAt),
+  ]
+);
+
 // ─── Relations ────────────────────────────────────────────────────────────────
 
 export const servicesRelations = relations(services, ({ many }) => ({
@@ -224,3 +250,7 @@ export type StatusLog = typeof statusLog.$inferSelect;
 export type NewStatusLog = typeof statusLog.$inferInsert;
 export type RequestStatusValue = (typeof RequestStatus.enumValues)[number];
 export type OptionTypeValue = (typeof OptionType.enumValues)[number];
+
+export type Review = typeof reviews.$inferSelect;
+export type NewReview = typeof reviews.$inferInsert;
+export type ReviewStatusValue = (typeof ReviewStatus.enumValues)[number];

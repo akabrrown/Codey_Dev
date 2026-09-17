@@ -1,6 +1,8 @@
 import Link from "next/link";
 import styles from "./coming-soon.module.css";
 import { WhatsAppIcon, EmailIcon } from "../../components/Icons";
+import BackgroundSlider from "../../components/BackgroundSlider";
+import { loadApprovedReviews } from "../../lib/reviews";
 
 export const metadata = {
   title: "Coming Soon | Codey Dev",
@@ -26,18 +28,13 @@ const CREDIBILITY_PILLARS = [
   },
 ];
 
-export default function ComingSoonPage() {
+export default async function ComingSoonPage() {
   const currentYear = new Date().getFullYear();
+  const reviews = await loadApprovedReviews();
 
   return (
     <div className={styles.container}>
-      {/* Background Geometrics (Fixed so it stays while scrolling) */}
-      <div className={styles.geoOverlay} style={{ position: "fixed" }}>
-        <div className={styles.mountain1}></div>
-        <div className={styles.mountain2}></div>
-        <div className={styles.mountain3}></div>
-        <div className={styles.flare}></div>
-      </div>
+      <BackgroundSlider />
 
       <div className={styles.contentWrapper}>
         {/* Header */}
@@ -86,6 +83,52 @@ export default function ComingSoonPage() {
             ))}
           </div>
         </section>
+
+        {/* Testimonials Section */}
+        {reviews.length > 0 && (
+          <section id="testimonials" className={styles.section}>
+            <h2 className={styles.sectionTitle}>What our clients say</h2>
+            <div className={styles.aboutGrid}>
+              {reviews.map((review) => (
+                <div key={review.id} className={styles.aboutCard} style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: "flex", gap: "2px", marginBottom: "var(--space-3)" }}>
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill={i < review.rating ? "var(--color-teal)" : "transparent"}
+                        stroke={i < review.rating ? "var(--color-teal)" : "var(--color-border)"}
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                    ))}
+                  </div>
+                  <blockquote style={{ 
+                    flex: 1,
+                    margin: "0 0 var(--space-4) 0",
+                    fontSize: "0.9375rem",
+                    color: "rgba(255, 255, 255, 0.9)",
+                    lineHeight: 1.6,
+                    fontStyle: "italic"
+                  }}>
+                    "{review.content}"
+                  </blockquote>
+                  <div>
+                    <div style={{ fontWeight: 600, color: "var(--color-white)" }}>{review.customerName}</div>
+                    {review.companyName && (
+                      <div style={{ fontSize: "0.8125rem", color: "var(--color-teal)" }}>{review.companyName}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Contact Section */}
         <section id="contact" className={styles.section}>

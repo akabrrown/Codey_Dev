@@ -146,3 +146,35 @@ export async function sendCustomerQuote(params: {
     html,
   });
 }
+
+export async function sendAdminNewReviewNotification(params: {
+  customerName: string;
+  companyName?: string;
+  rating: number;
+  content: string;
+}) {
+  const recipients = getAdminRecipients();
+  const companyStr = params.companyName ? ` (${params.companyName})` : "";
+  const html = `
+    <div style="font-family: sans-serif; line-height: 1.6; color: #111827;">
+      <h2 style="color: #0E7490;">New Customer Review Received</h2>
+      <p>A new ${params.rating}-star review has been submitted and is waiting for your approval.</p>
+      <div style="background-color: #F3F4F6; padding: 16px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>Customer:</strong> ${params.customerName}${companyStr}</p>
+        <p><strong>Rating:</strong> ${params.rating} / 5</p>
+        <p><strong>Review:</strong></p>
+        <blockquote style="border-left: 4px solid #0E7490; padding-left: 16px; margin-left: 0; font-style: italic;">
+          ${params.content}
+        </blockquote>
+      </div>
+      <p>Please log in to the admin dashboard to approve or decline this review.</p>
+      <p><a href="${ADMIN_URL}/admin/reviews" style="display: inline-block; padding: 10px 20px; background-color: #0E7490; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Review in Dashboard</a></p>
+    </div>
+  `;
+
+  return sendWithResend({
+    to: recipients,
+    subject: `New ${params.rating}-Star Review from ${params.customerName} requires approval`,
+    html,
+  });
+}

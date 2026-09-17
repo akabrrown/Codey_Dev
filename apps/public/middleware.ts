@@ -9,6 +9,7 @@ export function middleware(request: NextRequest) {
     url.pathname.startsWith('/_next') || 
     url.pathname.startsWith('/api') || 
     url.pathname.startsWith('/coming-soon') ||
+    url.pathname.startsWith('/reviews') ||
     url.pathname.match(/\.(png|jpg|jpeg|gif|svg|ico)$/)
   ) {
     return NextResponse.next();

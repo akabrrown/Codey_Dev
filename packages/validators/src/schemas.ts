@@ -37,6 +37,8 @@ export const OptionTypeSchema = z.enum([
   "subtype",
 ]);
 
+export const ReviewStatusEnum = z.enum(["pending", "approved", "declined"]);
+
 // ─── Public form submission ────────────────────────────────────────────────────
 
 const GhanaPhone = z
@@ -157,3 +159,28 @@ export const RequestListQuerySchema = z.object({
 });
 
 export type RequestListQuery = z.infer<typeof RequestListQuerySchema>;
+
+// ─── Reviews ───────────────────────────────────────────────────────────────────
+
+export const SubmitReviewSchema = z.object({
+  customerName: z.string().trim().min(2, "Name must be at least 2 characters").max(120),
+  companyName: z.string().trim().max(120).optional(),
+  rating: z.coerce.number().int().min(1, "Rating must be at least 1").max(5, "Rating cannot exceed 5"),
+  content: z.string().trim().min(10, "Review must be at least 10 characters").max(2000),
+});
+
+export type SubmitReviewInput = z.infer<typeof SubmitReviewSchema>;
+
+export const AdminUpdateReviewSchema = z.object({
+  status: ReviewStatusEnum.optional(),
+});
+
+export type AdminUpdateReviewInput = z.infer<typeof AdminUpdateReviewSchema>;
+
+export const ReviewListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+  status: ReviewStatusEnum.optional(),
+});
+
+export type ReviewListQuery = z.infer<typeof ReviewListQuerySchema>;
