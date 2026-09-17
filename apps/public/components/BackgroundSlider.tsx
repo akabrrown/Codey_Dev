@@ -36,7 +36,7 @@ export default function BackgroundSlider() {
         style={{
           position: "absolute",
           inset: 0,
-          backgroundColor: "rgba(8, 21, 35, 0.85)", // Navy dark with opacity
+          backgroundColor: "rgba(8, 21, 35, 0.4)", // Navy dark with 40% opacity so images are visible
           zIndex: 2,
         }}
       />
