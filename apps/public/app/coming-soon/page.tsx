@@ -61,9 +61,7 @@ export default function ComingSoonPage() {
         <main className={styles.main} style={{ minHeight: "calc(100vh - 80px)", paddingBottom: "var(--space-16)" }}>
           <h1 className={styles.title}>Coming soon</h1>
           <p className={styles.subtitle}>
-            A lot of carefully made <span className={styles.highlight}>apps</span> and
-            beautiful <span className={styles.highlight}>websites</span>, crafted by a
-            rare mixture of a workaholic and procrastinator.
+            Transforming complex business needs into high-performance <span className={styles.highlight}>apps</span> and premium <span className={styles.highlight}>websites</span>. Reliable engineering with zero compromises.
           </p>
 
           <a 
