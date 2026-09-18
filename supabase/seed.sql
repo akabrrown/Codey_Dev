@@ -126,11 +126,6 @@ ON CONFLICT (id) DO UPDATE SET
   helper_text = EXCLUDED.helper_text,
   sort_order = EXCLUDED.sort_order;
 
--- Clean up the old services that were removed
-DELETE FROM services WHERE id IN (
-  'a1000000-0000-0000-0000-000000000001', 
-  'a1000000-0000-0000-0000-000000000002', 
-  'a1000000-0000-0000-0000-000000000003'
-);
+
 
 COMMIT;
