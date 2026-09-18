@@ -2,8 +2,8 @@
 
 The prices below are starting prices for standard scope. Every project is different, so a final, fixed quotation is always issued in writing after we understand your requirements — see the Custom Quotes note at the end of this list.
 
-**1\. Web Design & Development**
-================================
+**1\. Website Development (Production & Student Projects)**
+=========================================================
 
 | **Service** | **What's Included** | **Price (GH₵)** |
 | --- | --- | --- |
@@ -13,8 +13,8 @@ The prices below are starting prices for standard scope. Every project is differ
 | **E-commerce Website** | Product catalog, cart & checkout, Paystack/Mobile Money integration, order management | 6,000 – 12,000 |
 | **Website Redesign / Revamp** | Modernizing an existing site's design and performance | 2,000 – 5,000 |
 
-**2\. Custom Software Development**
-===================================
+**2\. Custom Software Development (Production & Student Projects)**
+===================================================================
 
 | **Service** | **What's Included** | **Price (GH₵)** |
 | --- | --- | --- |
@@ -24,8 +24,8 @@ The prices below are starting prices for standard scope. Every project is differ
 | **School Management System** | Admissions, results/grading, fees tracking, parent/staff portals | 10,000 – 25,000 |
 | **Custom Business Software (other)** | Scoped after a requirements session — priced per feature set | Custom Quote |
 
-**3\. Mobile App Development**
-==============================
+**3\. Mobile App Development (Production & Student Projects)**
+==============================================================
 
 | **Service** | **What's Included** | **Price (GH₵)** |
 | --- | --- | --- |
