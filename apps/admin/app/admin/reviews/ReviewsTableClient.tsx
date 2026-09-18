@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { fetchClientWithAuth } from "../../../lib/api-client";
+import { fetchWithAuth } from "../../../lib/api-client";
 
 interface Review {
   id: string;
@@ -20,7 +20,7 @@ export default function ReviewsTableClient({ initialReviews }: { initialReviews:
   const handleUpdateStatus = async (id: string, status: "approved" | "declined") => {
     setIsLoadingId(id);
     try {
-      const res = await fetchClientWithAuth(`/api/v1/admin/reviews/${id}`, {
+      const res = await fetchWithAuth(`/api/v1/admin/reviews/${id}`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
       });
