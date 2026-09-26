@@ -65,9 +65,9 @@
 .logoMark {
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, #35C4E0, #1D4ED8);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(53, 196, 224, 0.4);
+  background-color: #35C4E0;
+  clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%, 20% 50%);
+  flex-shrink: 0;
 }
 
 /* Bento Hero */
