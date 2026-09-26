@@ -98,8 +98,8 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
     const [existing] = await db.select().from(services).where(eq(services.id, serviceId)).limit(1);
     if (!existing) return apiError("NOT_FOUND", "Service not found.", { status: 404, req });
 
-    const { UpdateServiceBasePriceSchema } = await import("@codey/validators");
-    const parsed = UpdateServiceBasePriceSchema.safeParse(body);
+    const { UpdateServiceSchema } = await import("@codey/validators");
+    const parsed = UpdateServiceSchema.safeParse(body);
     if (!parsed.success) {
       const firstError = parsed.error.errors[0];
       return apiError("VALIDATION_ERROR", firstError?.message ?? "Validation failed", {
@@ -109,13 +109,14 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
       });
     }
 
+    const updateData: any = { updatedAt: new Date() };
+    if (parsed.data.basePriceMin !== undefined) updateData.basePriceMin = String(parsed.data.basePriceMin);
+    if (parsed.data.basePriceMax !== undefined) updateData.basePriceMax = String(parsed.data.basePriceMax);
+    if (parsed.data.isActive !== undefined) updateData.isActive = parsed.data.isActive;
+
     const [updatedService] = await db
       .update(services)
-      .set({
-        basePriceMin: String(parsed.data.basePriceMin),
-        basePriceMax: String(parsed.data.basePriceMax),
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(eq(services.id, serviceId))
       .returning();
 

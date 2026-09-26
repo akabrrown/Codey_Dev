@@ -142,9 +142,27 @@ export const UpdateServiceBasePriceSchema = z.object({
   path: ["basePriceMax"],
 });
 
+export const UpdateServiceSchema = z.object({
+  basePriceMin: z.number().min(0, "Base minimum price cannot be negative").optional(),
+  basePriceMax: z.number().min(0, "Base maximum price cannot be negative").optional(),
+  isActive: z.boolean().optional(),
+}).refine(
+  (data) => {
+    if (data.basePriceMin !== undefined && data.basePriceMax !== undefined) {
+      return data.basePriceMax >= data.basePriceMin;
+    }
+    return true;
+  },
+  {
+    message: "Base maximum price must be greater than or equal to base minimum price",
+    path: ["basePriceMax"],
+  }
+);
+
 export type CreateServiceOptionInput = z.infer<typeof CreateServiceOptionSchema>;
 export type UpdateServiceOptionInput = z.infer<typeof UpdateServiceOptionSchema>;
 export type UpdateServiceBasePriceInput = z.infer<typeof UpdateServiceBasePriceSchema>;
+export type UpdateServiceInput = z.infer<typeof UpdateServiceSchema>;
 
 // ─── Pagination / filter query params ─────────────────────────────────────────
 

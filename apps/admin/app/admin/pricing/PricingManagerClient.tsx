@@ -10,6 +10,7 @@ interface ServiceItem {
   description: string;
   basePriceMin: number;
   basePriceMax: number;
+  isActive: boolean;
 }
 
 interface ServiceOptionItem {
@@ -92,6 +93,26 @@ export default function PricingManagerClient({
   };
 
   useEffect(() => {
+    const fetchAdminServices = async () => {
+      try {
+        const res = await fetchWithAuth("/api/v1/admin/services");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.data) {
+            setServices(data.data);
+            if (!selectedServiceId && data.data.length > 0) {
+              setSelectedServiceId(data.data[0].id);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load admin services", err);
+      }
+    };
+    fetchAdminServices();
+  }, []);
+
+  useEffect(() => {
     if (selectedServiceId) {
       loadServiceOptions(selectedServiceId);
       const svc = services.find((s) => s.id === selectedServiceId);
@@ -142,6 +163,27 @@ export default function PricingManagerClient({
       setFeedback({ type: "error", message: err instanceof Error ? err.message : "Failed to update base prices." });
     } finally {
       setSavingBase(false);
+    }
+  };
+
+  const handleToggleServiceActive = async (serviceId: string, currentActive: boolean) => {
+    try {
+      const res = await fetchWithAuth(`/api/v1/admin/pricing/${serviceId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ isActive: !currentActive }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error?.message || "Failed to update service status.");
+      }
+      setServices((prev) =>
+        prev.map((s) =>
+          s.id === serviceId ? { ...s, isActive: !currentActive } : s
+        )
+      );
+      setFeedback({ type: "success", message: `Service ${!currentActive ? "activated" : "deactivated"} successfully.` });
+    } catch (err) {
+      setFeedback({ type: "error", message: err instanceof Error ? err.message : "Failed to toggle service status." });
     }
   };
 
@@ -283,9 +325,9 @@ export default function PricingManagerClient({
             key={srv.id}
             onClick={() => setSelectedServiceId(srv.id)}
             className={`btn ${srv.id === selectedServiceId ? "btn-navy" : "btn-outline"}`}
-            style={{ whiteSpace: "nowrap" }}
+            style={{ whiteSpace: "nowrap", opacity: srv.isActive ? 1 : 0.6 }}
           >
-            {srv.name}
+            {srv.name} {!srv.isActive && "(Inactive)"}
           </button>
         ))}
       </div>
@@ -319,8 +361,11 @@ export default function PricingManagerClient({
         <div className="card" style={{ marginBottom: "1.5rem", backgroundColor: "#F8FAFC" }}>
           <div className="card-body" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
             <div>
-              <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--color-navy-dark)" }}>
+              <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--color-navy-dark)", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 {currentService.name} Base Rate
+                {!currentService.isActive && (
+                  <span style={{ fontSize: "0.75rem", padding: "0.125rem 0.5rem", borderRadius: "9999px", backgroundColor: "#FEE2E2", color: "#B91C1C", fontWeight: 600 }}>Inactive</span>
+                )}
               </h2>
               <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
                 {currentService.description}
@@ -385,6 +430,14 @@ export default function PricingManagerClient({
                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                   </svg>
                   <span>Edit Base Rate</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleServiceActive(currentService.id, currentService.isActive)}
+                  className="btn btn-outline btn-sm"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", color: currentService.isActive ? "#B91C1C" : "#15803D", borderColor: currentService.isActive ? "#FCA5A5" : "#86EFAC" }}
+                >
+                  <span>{currentService.isActive ? "Deactivate Service" : "Activate Service"}</span>
                 </button>
               </div>
             )}
