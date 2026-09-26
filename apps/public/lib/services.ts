@@ -250,6 +250,16 @@ export const FALLBACK_SERVICES: ServiceData[] = [
       { id: "9af4a7ad-d5f7-56c7-838c-777084964d23", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Real-Time Data Sync", optionType: "feature", priceImpact: "500", isMultiplier: false, multiplierValue: null, helperText: "Actions taken on the website or software instantly reflect in the mobile app without requiring a manual refresh.", sortOrder: 11 },
       { id: "0f7adf32-eaa0-5e73-919b-4de336dd7949", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Master Control Panel", optionType: "feature", priceImpact: "500", isMultiplier: false, multiplierValue: null, helperText: "A dedicated master dashboard for the business owner to monitor analytics, users, and content across all platforms.", sortOrder: 12 },
 
+      // Integrations
+      { id: "609ff5c4-9854-5fc2-a0e4-7fa8f2ff4db2", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Payment Processing", optionType: "integration", priceImpact: "300", isMultiplier: false, multiplierValue: null, helperText: "Receive payments (Mobile Money / Cards) on your platform.", sortOrder: 13 },
+
+      // Features
+      { id: "930dc9e8-fae7-5649-9ad4-1ac494b60a79", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Push Notifications", optionType: "feature", priceImpact: "200", isMultiplier: false, multiplierValue: null, helperText: "Engage mobile and web users with instant push alerts.", sortOrder: 14 },
+      { id: "d92108e6-92d9-5120-8b61-7a4329c5a2b7", serviceId: "a1000000-0000-0000-0000-000000000012", label: "GPS / Location Services", optionType: "feature", priceImpact: "400", isMultiplier: false, multiplierValue: null, helperText: "Track user location, routes, or maps within the app.", sortOrder: 15 },
+      { id: "d8aadec1-325b-592f-af55-cff03819c7ae", serviceId: "a1000000-0000-0000-0000-000000000012", label: "E-commerce / Store Functionality", optionType: "feature", priceImpact: "800", isMultiplier: false, multiplierValue: null, helperText: "Full product catalog, shopping cart, and checkout system.", sortOrder: 16 },
+      { id: "5bb7cab2-3e7b-5b9c-897e-920e8ba57d6e", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Content Management System (CMS)", optionType: "feature", priceImpact: "500", isMultiplier: false, multiplierValue: null, helperText: "Easily edit your website text and images yourself.", sortOrder: 17 },
+      { id: "c63fa5f5-62da-5261-ae71-f3efe0559dd1", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Advanced Security Audit", optionType: "feature", priceImpact: "800", isMultiplier: false, multiplierValue: null, helperText: "Enterprise-grade security scanning and encryption.", sortOrder: 18 },
+
       // Timelines
       { id: "25b3c76c-bb99-5236-8e41-e27beb6361fc", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Standard Multi-Phase Timeline", optionType: "timeline", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Delivered in phases over the agreed timeline.", sortOrder: 50 },
       { id: "7cbd79fc-3bc4-5287-8638-5b7aaaead894", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Rush Timeline", optionType: "timeline", priceImpact: "0", isMultiplier: true, multiplierValue: "1.25", helperText: "Priority queue — 25% premium. Delivery expedited.", sortOrder: 51 },
@@ -275,6 +285,14 @@ export const FALLBACK_SERVICES: ServiceData[] = [
       { id: "a5c27820-d537-572f-bbc5-bbe9543e8b26", serviceId: "a1000000-0000-0000-0000-000000000013", label: "Unified Account Login", optionType: "feature", priceImpact: "100", isMultiplier: false, multiplierValue: null, helperText: "Demonstrate a single sign-on architecture across the entire ecosystem.", sortOrder: 10 },
       { id: "859e18d5-3fab-5960-a458-4a654207f727", serviceId: "a1000000-0000-0000-0000-000000000013", label: "Real-Time Data Sync", optionType: "feature", priceImpact: "150", isMultiplier: false, multiplierValue: null, helperText: "Show real-time data syncing between the backend system and mobile app.", sortOrder: 11 },
       { id: "152241dd-39cc-5430-8b0b-9d2c6aa7fc65", serviceId: "a1000000-0000-0000-0000-000000000013", label: "Master Control Panel", optionType: "feature", priceImpact: "150", isMultiplier: false, multiplierValue: null, helperText: "A dedicated dashboard to manage and present your entire project ecosystem.", sortOrder: 12 },
+
+      // Integrations
+      { id: "55ba6bf9-3522-5ce9-9856-a18d8cc74a8a", serviceId: "a1000000-0000-0000-0000-000000000013", label: "Payment Processing (Mock/Simulated)", optionType: "integration", priceImpact: "100", isMultiplier: false, multiplierValue: null, helperText: "Demonstrate payment flows in your defense.", sortOrder: 13 },
+
+      // Features
+      { id: "2ff0cb0e-8ef1-53ee-abc4-f5e86ee376db", serviceId: "a1000000-0000-0000-0000-000000000013", label: "Push Notifications", optionType: "feature", priceImpact: "100", isMultiplier: false, multiplierValue: null, helperText: "Showcase real-time alerts in your mobile app component.", sortOrder: 14 },
+      { id: "9772acec-29dc-534e-944e-e1887201b39b", serviceId: "a1000000-0000-0000-0000-000000000013", label: "GPS / Map Integration", optionType: "feature", priceImpact: "150", isMultiplier: false, multiplierValue: null, helperText: "Integrate maps or location services into the project.", sortOrder: 15 },
+      { id: "43d63ab3-4776-513a-b816-978ea9885dcf", serviceId: "a1000000-0000-0000-0000-000000000013", label: "File / Image Uploads", optionType: "feature", priceImpact: "100", isMultiplier: false, multiplierValue: null, helperText: "Allow users to capture and upload images or documents.", sortOrder: 16 },
 
       // Timelines
       { id: "859f9b1b-cc44-5517-925c-493107c6c52a", serviceId: "a1000000-0000-0000-0000-000000000013", label: "Standard Academic Timeline (4 weeks)", optionType: "timeline", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Standard delivery aligned with academic milestones.", sortOrder: 50 },

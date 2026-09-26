@@ -125,6 +125,12 @@ INSERT INTO service_options (id, service_id, label, option_type, price_impact, i
   ('b3c50b92-fc93-5384-ab86-776dd8407e21', 'a1000000-0000-0000-0000-000000000012', 'Unified Account Login', 'feature', 300, false, null, 'Allow your users to create one account and seamlessly log in across the website, app, and software.', 10),
   ('9af4a7ad-d5f7-56c7-838c-777084964d23', 'a1000000-0000-0000-0000-000000000012', 'Real-Time Data Sync', 'feature', 500, false, null, 'Actions taken on the website or software instantly reflect in the mobile app without requiring a manual refresh.', 11),
   ('0f7adf32-eaa0-5e73-919b-4de336dd7949', 'a1000000-0000-0000-0000-000000000012', 'Master Control Panel', 'feature', 500, false, null, 'A dedicated master dashboard for the business owner to monitor analytics, users, and content across all platforms.', 12),
+  ('609ff5c4-9854-5fc2-a0e4-7fa8f2ff4db2', 'a1000000-0000-0000-0000-000000000012', 'Payment Processing', 'integration', 300, false, null, 'Receive payments (Mobile Money / Cards) on your platform.', 13),
+  ('930dc9e8-fae7-5649-9ad4-1ac494b60a79', 'a1000000-0000-0000-0000-000000000012', 'Push Notifications', 'feature', 200, false, null, 'Engage mobile and web users with instant push alerts.', 14),
+  ('d92108e6-92d9-5120-8b61-7a4329c5a2b7', 'a1000000-0000-0000-0000-000000000012', 'GPS / Location Services', 'feature', 400, false, null, 'Track user location, routes, or maps within the app.', 15),
+  ('d8aadec1-325b-592f-af55-cff03819c7ae', 'a1000000-0000-0000-0000-000000000012', 'E-commerce / Store Functionality', 'feature', 800, false, null, 'Full product catalog, shopping cart, and checkout system.', 16),
+  ('5bb7cab2-3e7b-5b9c-897e-920e8ba57d6e', 'a1000000-0000-0000-0000-000000000012', 'Content Management System (CMS)', 'feature', 500, false, null, 'Easily edit your website text and images yourself.', 17),
+  ('c63fa5f5-62da-5261-ae71-f3efe0559dd1', 'a1000000-0000-0000-0000-000000000012', 'Advanced Security Audit', 'feature', 800, false, null, 'Enterprise-grade security scanning and encryption.', 18),
   ('25b3c76c-bb99-5236-8e41-e27beb6361fc', 'a1000000-0000-0000-0000-000000000012', 'Standard Multi-Phase Timeline', 'timeline', 0, false, null, 'Delivered in phases over the agreed timeline.', 50),
   ('7cbd79fc-3bc4-5287-8638-5b7aaaead894', 'a1000000-0000-0000-0000-000000000012', 'Rush Timeline', 'timeline', 0, true, 1.25, 'Priority queue — 25% premium. Delivery expedited.', 51),
   ('85b19c08-b762-55ef-90ae-c653e3e4c7af', 'a1000000-0000-0000-0000-000000000013', 'Website + Mobile App', 'subtype', 0, false, null, 'A complete academic web portal and matching mobile app presentation.', 1),
@@ -134,6 +140,10 @@ INSERT INTO service_options (id, service_id, label, option_type, price_impact, i
   ('a5c27820-d537-572f-bbc5-bbe9543e8b26', 'a1000000-0000-0000-0000-000000000013', 'Unified Account Login', 'feature', 100, false, null, 'Demonstrate a single sign-on architecture across the entire ecosystem.', 10),
   ('859e18d5-3fab-5960-a458-4a654207f727', 'a1000000-0000-0000-0000-000000000013', 'Real-Time Data Sync', 'feature', 150, false, null, 'Show real-time data syncing between the backend system and mobile app.', 11),
   ('152241dd-39cc-5430-8b0b-9d2c6aa7fc65', 'a1000000-0000-0000-0000-000000000013', 'Master Control Panel', 'feature', 150, false, null, 'A dedicated dashboard to manage and present your entire project ecosystem.', 12),
+  ('55ba6bf9-3522-5ce9-9856-a18d8cc74a8a', 'a1000000-0000-0000-0000-000000000013', 'Payment Processing (Mock/Simulated)', 'integration', 100, false, null, 'Demonstrate payment flows in your defense.', 13),
+  ('2ff0cb0e-8ef1-53ee-abc4-f5e86ee376db', 'a1000000-0000-0000-0000-000000000013', 'Push Notifications', 'feature', 100, false, null, 'Showcase real-time alerts in your mobile app component.', 14),
+  ('9772acec-29dc-534e-944e-e1887201b39b', 'a1000000-0000-0000-0000-000000000013', 'GPS / Map Integration', 'feature', 150, false, null, 'Integrate maps or location services into the project.', 15),
+  ('43d63ab3-4776-513a-b816-978ea9885dcf', 'a1000000-0000-0000-0000-000000000013', 'File / Image Uploads', 'feature', 100, false, null, 'Allow users to capture and upload images or documents.', 16),
   ('859f9b1b-cc44-5517-925c-493107c6c52a', 'a1000000-0000-0000-0000-000000000013', 'Standard Academic Timeline (4 weeks)', 'timeline', 0, false, null, 'Standard delivery aligned with academic milestones.', 50),
   ('85f96569-a86b-57a5-93e2-1315f0b2833a', 'a1000000-0000-0000-0000-000000000013', 'Rush Timeline', 'timeline', 0, true, 1.25, 'Priority queue — 25% premium for urgent academic deadlines.', 51)
 ON CONFLICT (id) DO UPDATE SET
