@@ -50,10 +50,16 @@ const SERVICE_ITEMS = [
     tag: "From GH₵ 800",
   },
   {
-    icon: <ShieldCheckIcon size={28} />, // Re-using ShieldCheckIcon for now as an ecosystem/bundle icon
-    title: "Custom Multi-Service Bundle",
-    desc: "Combine multiple services (e.g. Website + Mobile App + Custom Software) for a comprehensive digital ecosystem.",
+    icon: <ShieldCheckIcon size={28} />,
+    title: "Multi-Service Bundle (Production)",
+    desc: "Combine multiple services (e.g. Website + Mobile App + Custom Software) for a comprehensive commercial digital ecosystem.",
     tag: "From GH₵ 8,000",
+  },
+  {
+    icon: <ShieldCheckIcon size={28} />,
+    title: "Multi-Service Bundle (Student)",
+    desc: "Combine multiple services for an academic final-year project ecosystem at a heavily discounted rate.",
+    tag: "From GH₵ 1,500",
   },
 ];
 
