@@ -7,7 +7,7 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     slug: "web-design-prod",
     description: "Modern websites for businesses, e-commerce stores, schools, NGOs, and corporate organisations.",
     basePriceMin: "2000",
-    basePriceMax: "8000",
+    basePriceMax: "12000",
     options: [
 
       // Subtypes
@@ -40,25 +40,25 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     name: "Website Development (Student Project)",
     slug: "web-design-student",
     description: "Informational websites, e-commerce stores, booking systems, or dashboards for student defenses.",
-    basePriceMin: "2000",
-    basePriceMax: "8000",
+    basePriceMin: "500",
+    basePriceMax: "2500",
     options: [
 
       // Subtypes
       { id: "224e77a7-ca43-5a12-bb9c-f569c0c95ea6", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Informational Website", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "About a topic or organization, mostly static pages.", sortOrder: 1 },
-      { id: "035600e6-4276-5045-8f9e-6f3b54652788", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Web Application with User Accounts", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Interactive system with login and data management.", sortOrder: 2 },
-      { id: "7f4861c7-456b-526b-9966-59add8598b81", serviceId: "a1000000-0000-0000-0000-000000000007", label: "E-commerce / Online Store", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Product catalog, cart, and simulated checkout.", sortOrder: 3 },
-      { id: "6ce452d0-726c-5e7c-980b-0669c3de7ef1", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Booking / Reservation System", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Calendar schedules for appointments or bookings.", sortOrder: 4 },
-      { id: "af34e427-fc00-5928-86dd-f41a02a306ed", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Dashboard / Admin System", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Data management and reporting interface.", sortOrder: 5 },
+      { id: "035600e6-4276-5045-8f9e-6f3b54652788", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Web Application with User Accounts", optionType: "subtype", priceImpact: "200", isMultiplier: false, multiplierValue: null, helperText: "Interactive system with login and data management.", sortOrder: 2 },
+      { id: "7f4861c7-456b-526b-9966-59add8598b81", serviceId: "a1000000-0000-0000-0000-000000000007", label: "E-commerce / Online Store", optionType: "subtype", priceImpact: "400", isMultiplier: false, multiplierValue: null, helperText: "Product catalog, cart, and simulated checkout.", sortOrder: 3 },
+      { id: "6ce452d0-726c-5e7c-980b-0669c3de7ef1", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Booking / Reservation System", optionType: "subtype", priceImpact: "300", isMultiplier: false, multiplierValue: null, helperText: "Calendar schedules for appointments or bookings.", sortOrder: 4 },
+      { id: "af34e427-fc00-5928-86dd-f41a02a306ed", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Dashboard / Admin System", optionType: "subtype", priceImpact: "300", isMultiplier: false, multiplierValue: null, helperText: "Data management and reporting interface.", sortOrder: 5 },
 
       // Features
-      { id: "34f2bbec-5371-53fe-8637-95b354cdb2eb", serviceId: "a1000000-0000-0000-0000-000000000007", label: "User Registration & Login", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Secure authentication for users.", sortOrder: 10 },
-      { id: "b9ebdac5-c1e1-5b3a-a9df-0846f4917a50", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Role-Based Access (Admin vs User)", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Different permissions based on user role.", sortOrder: 11 },
-      { id: "fc6772f8-eb54-5014-add6-911652c2f484", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Search & Filtering", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Search through records or products.", sortOrder: 12 },
-      { id: "6de2cd39-d48c-5c1a-a3f9-341b3c6deae1", serviceId: "a1000000-0000-0000-0000-000000000007", label: "File Uploads (Documents/Images)", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Allow users to upload media or files.", sortOrder: 13 },
-      { id: "8e8f548b-d3c1-56a1-ad22-6851afc0efdf", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Notifications (Email/In-App)", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Alerts for system events.", sortOrder: 14 },
-      { id: "85269cbb-f180-5ce7-bb6a-45de11669312", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Reports & Analytics", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Charts and data summaries.", sortOrder: 15 },
-      { id: "e8fa7b49-918d-5485-82bf-97784560d2b2", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Payment Processing (MoMo/Paystack)", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Simulated or live payment gateway integration.", sortOrder: 16 },
+      { id: "34f2bbec-5371-53fe-8637-95b354cdb2eb", serviceId: "a1000000-0000-0000-0000-000000000007", label: "User Registration & Login", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Secure authentication for users.", sortOrder: 10 },
+      { id: "b9ebdac5-c1e1-5b3a-a9df-0846f4917a50", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Role-Based Access (Admin vs User)", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Different permissions based on user role.", sortOrder: 11 },
+      { id: "fc6772f8-eb54-5014-add6-911652c2f484", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Search & Filtering", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Search through records or products.", sortOrder: 12 },
+      { id: "6de2cd39-d48c-5c1a-a3f9-341b3c6deae1", serviceId: "a1000000-0000-0000-0000-000000000007", label: "File Uploads (Documents/Images)", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Allow users to upload media or files.", sortOrder: 13 },
+      { id: "8e8f548b-d3c1-56a1-ad22-6851afc0efdf", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Notifications (Email/In-App)", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Alerts for system events.", sortOrder: 14 },
+      { id: "85269cbb-f180-5ce7-bb6a-45de11669312", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Reports & Analytics", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Charts and data summaries.", sortOrder: 15 },
+      { id: "e8fa7b49-918d-5485-82bf-97784560d2b2", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Payment Processing (MoMo/Paystack)", optionType: "feature", priceImpact: "100", isMultiplier: false, multiplierValue: null, helperText: "Simulated or live payment gateway integration.", sortOrder: 16 },
 
       // Timelines
       { id: "a832ce25-470c-5805-b0ce-0fc498f950e0", serviceId: "a1000000-0000-0000-0000-000000000007", label: "Standard Academic Timeline", optionType: "timeline", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Delivered in time for standard defense dates.", sortOrder: 50 },
@@ -70,8 +70,8 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     name: "Custom Software Development (Production)",
     slug: "custom-software-prod",
     description: "POS systems, inventory management, HR systems, school portals, and bespoke ERP solutions.",
-    basePriceMin: "8000",
-    basePriceMax: "20000",
+    basePriceMin: "6000",
+    basePriceMax: "25000",
     options: [
 
       // Subtypes
@@ -99,8 +99,8 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     name: "Custom Software Development (Student Project)",
     slug: "custom-software-student",
     description: "Inventory, HR, School Management, or bespoke systems for student defenses.",
-    basePriceMin: "8000",
-    basePriceMax: "20000",
+    basePriceMin: "1000",
+    basePriceMax: "4000",
     options: [
 
       // Subtypes
@@ -111,12 +111,12 @@ export const FALLBACK_SERVICES: ServiceData[] = [
       { id: "fdf92cfe-d322-52de-9865-d8a08ecd8193", serviceId: "a1000000-0000-0000-0000-000000000009", label: "POS & Retail System", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Sales processing and receipts.", sortOrder: 5 },
 
       // Features
-      { id: "ef48d0dd-d8ec-5be9-81cf-28f79428ed8a", serviceId: "a1000000-0000-0000-0000-000000000009", label: "User Registration & Login", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Secure authentication for users.", sortOrder: 10 },
-      { id: "fc5fe281-57b3-555c-b113-232dad96a168", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Role-Based Access (Admin vs User)", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Different permissions based on user role.", sortOrder: 11 },
-      { id: "fffed687-43df-5386-98d0-f095f5d96f56", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Search & Filtering", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Search through records or products.", sortOrder: 12 },
-      { id: "433260a6-e7c0-5305-8659-33024f2285e5", serviceId: "a1000000-0000-0000-0000-000000000009", label: "File Uploads (Documents/Images)", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Allow users to upload media or files.", sortOrder: 13 },
-      { id: "3fbbc7a5-bc14-588d-a363-4a1dda3b20a7", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Notifications (Email/In-App)", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Alerts for system events.", sortOrder: 14 },
-      { id: "4b874b3f-bed8-5f71-84ed-b74733f48651", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Reports & Analytics", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Charts and data summaries.", sortOrder: 15 },
+      { id: "ef48d0dd-d8ec-5be9-81cf-28f79428ed8a", serviceId: "a1000000-0000-0000-0000-000000000009", label: "User Registration & Login", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Secure authentication for users.", sortOrder: 10 },
+      { id: "fc5fe281-57b3-555c-b113-232dad96a168", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Role-Based Access (Admin vs User)", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Different permissions based on user role.", sortOrder: 11 },
+      { id: "fffed687-43df-5386-98d0-f095f5d96f56", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Search & Filtering", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Search through records or products.", sortOrder: 12 },
+      { id: "433260a6-e7c0-5305-8659-33024f2285e5", serviceId: "a1000000-0000-0000-0000-000000000009", label: "File Uploads (Documents/Images)", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Allow users to upload media or files.", sortOrder: 13 },
+      { id: "3fbbc7a5-bc14-588d-a363-4a1dda3b20a7", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Notifications (Email/In-App)", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Alerts for system events.", sortOrder: 14 },
+      { id: "4b874b3f-bed8-5f71-84ed-b74733f48651", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Reports & Analytics", optionType: "feature", priceImpact: "50", isMultiplier: false, multiplierValue: null, helperText: "Charts and data summaries.", sortOrder: 15 },
 
       // Timelines
       { id: "aefccbb0-5077-59e0-847b-c369467514fb", serviceId: "a1000000-0000-0000-0000-000000000009", label: "Standard Academic Timeline", optionType: "timeline", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Delivered in time for standard defense dates.", sortOrder: 50 },
@@ -128,8 +128,8 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     name: "Mobile App Development (Production)",
     slug: "mobile-app-prod",
     description: "iOS and Android apps for startups, commerce, deliveries, and enterprise field teams.",
-    basePriceMin: "6000",
-    basePriceMax: "18000",
+    basePriceMin: "8000",
+    basePriceMax: "30000",
     options: [
 
       // Subtypes
@@ -156,21 +156,21 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     name: "Mobile App Development (Student Project)",
     slug: "mobile-app-student",
     description: "Mobile apps for academic projects, featuring user accounts, notifications, and media uploads.",
-    basePriceMin: "6000",
-    basePriceMax: "18000",
+    basePriceMin: "1500",
+    basePriceMax: "5000",
     options: [
 
       // Subtypes
       { id: "faaf9ce3-4eee-544c-821e-381e9fde5910", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Android App (Java/Kotlin)", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Native Android application.", sortOrder: 1 },
-      { id: "ef38719e-8167-50b6-b5ef-fe701b3b5c58", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Cross-Platform App (Flutter/React Native)", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Runs on both Android and iOS.", sortOrder: 2 },
-      { id: "ead38ae5-3aea-5f00-b34a-2748929ae51a", serviceId: "a1000000-0000-0000-0000-000000000011", label: "iOS App", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Native iOS application.", sortOrder: 3 },
+      { id: "ef38719e-8167-50b6-b5ef-fe701b3b5c58", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Cross-Platform App (Flutter/React Native)", optionType: "subtype", priceImpact: "500", isMultiplier: false, multiplierValue: null, helperText: "Runs on both Android and iOS.", sortOrder: 2 },
+      { id: "ead38ae5-3aea-5f00-b34a-2748929ae51a", serviceId: "a1000000-0000-0000-0000-000000000011", label: "iOS App", optionType: "subtype", priceImpact: "200", isMultiplier: false, multiplierValue: null, helperText: "Native iOS application.", sortOrder: 3 },
 
       // Features
       { id: "731e0c7d-e218-596b-9457-3fe93ef12767", serviceId: "a1000000-0000-0000-0000-000000000011", label: "User Authentication", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Login and Registration functionality.", sortOrder: 10 },
-      { id: "59942f49-6f8d-5727-8897-02cef55979a0", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Camera / Image Upload", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Access device camera or gallery.", sortOrder: 11 },
-      { id: "b204c8cb-84c2-5392-bc04-c05020764c5b", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Push Notifications", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Firebase or local push notifications.", sortOrder: 12 },
-      { id: "39a86b6e-b88c-533c-af91-0614729e9824", serviceId: "a1000000-0000-0000-0000-000000000011", label: "GPS / Location Services", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Map integration and location tracking.", sortOrder: 13 },
-      { id: "f5718578-b4ff-5c3e-a93c-aacaa5b070a4", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Payment Processing", optionType: "feature", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Simulated mobile money or card payments.", sortOrder: 14 },
+      { id: "59942f49-6f8d-5727-8897-02cef55979a0", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Camera / Image Upload", optionType: "feature", priceImpact: "100", isMultiplier: false, multiplierValue: null, helperText: "Access device camera or gallery.", sortOrder: 11 },
+      { id: "b204c8cb-84c2-5392-bc04-c05020764c5b", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Push Notifications", optionType: "feature", priceImpact: "100", isMultiplier: false, multiplierValue: null, helperText: "Firebase or local push notifications.", sortOrder: 12 },
+      { id: "39a86b6e-b88c-533c-af91-0614729e9824", serviceId: "a1000000-0000-0000-0000-000000000011", label: "GPS / Location Services", optionType: "feature", priceImpact: "150", isMultiplier: false, multiplierValue: null, helperText: "Map integration and location tracking.", sortOrder: 13 },
+      { id: "f5718578-b4ff-5c3e-a93c-aacaa5b070a4", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Payment Processing", optionType: "feature", priceImpact: "150", isMultiplier: false, multiplierValue: null, helperText: "Simulated mobile money or card payments.", sortOrder: 14 },
 
       // Timelines
       { id: "3a141dca-6530-523f-a2d3-62171960376e", serviceId: "a1000000-0000-0000-0000-000000000011", label: "Standard Academic Timeline", optionType: "timeline", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Delivered in time for standard defense dates.", sortOrder: 50 },
@@ -182,7 +182,7 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     name: "Website Maintenance",
     slug: "maintenance",
     description: "Updates, security patches, content changes, and performance checks for existing websites.",
-    basePriceMin: "500",
+    basePriceMin: "300",
     basePriceMax: "2000",
     options: [
 
@@ -208,8 +208,8 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     name: "SEO Services",
     slug: "seo",
     description: "On-page SEO, keyword research, Google Business setup, and monthly reporting.",
-    basePriceMin: "1000",
-    basePriceMax: "4000",
+    basePriceMin: "500",
+    basePriceMax: "2000",
     options: [
 
       // Subtypes
