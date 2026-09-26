@@ -231,3 +231,27 @@ export const FALLBACK_SERVICES: ServiceData[] = [
     ],
   },
 ];
+
+export async function loadServices(): Promise<ServiceData[]> {
+  const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || process.env["API_URL"];
+  if (!apiUrl) return FALLBACK_SERVICES;
+
+  try {
+    const res = await fetch(`${apiUrl}/api/v1/services`, {
+      next: { revalidate: 300, tags: ["services-catalog"] },
+      signal: AbortSignal.timeout(3000),
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!res.ok) return FALLBACK_SERVICES;
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+      return json.data;
+    }
+    return FALLBACK_SERVICES;
+  } catch {
+    return FALLBACK_SERVICES;
+  }
+}
