@@ -49,6 +49,12 @@ const SERVICE_ITEMS = [
     desc: "Google Business profile setup, schema markup, Core Web Vitals tuning, and local search visibility for Ghanaian commercial queries.",
     tag: "From GH₵ 800",
   },
+  {
+    icon: <ShieldCheckIcon size={28} />, // Re-using ShieldCheckIcon for now as an ecosystem/bundle icon
+    title: "Custom Multi-Service Bundle",
+    desc: "Combine multiple services (e.g. Website + Mobile App + Custom Software) for a comprehensive digital ecosystem.",
+    tag: "From GH₵ 8,000",
+  },
 ];
 
 const CREDIBILITY_PILLARS = [
