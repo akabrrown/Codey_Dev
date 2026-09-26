@@ -230,6 +230,33 @@ export const FALLBACK_SERVICES: ServiceData[] = [
 
     ],
   },
+  {
+    id: "a1000000-0000-0000-0000-000000000012",
+    name: "Custom Multi-Service Bundle",
+    slug: "custom-bundle",
+    description: "Combine multiple services (e.g. Website + Mobile App) for a comprehensive digital ecosystem.",
+    basePriceMin: "8000",
+    basePriceMax: "25000",
+    options: [
+
+      // Subtypes
+      { id: "f3c9c03b-ffdf-512d-ae05-fe342ed1cc2d", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Website + Mobile App", optionType: "subtype", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "A full customer-facing web presence alongside native mobile applications.", sortOrder: 1 },
+      { id: "635d69d5-8194-5183-98b5-5bdfbca79a1f", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Website + Custom Software", optionType: "subtype", priceImpact: "1000", isMultiplier: false, multiplierValue: null, helperText: "A public website powered by a private administrative or inventory backend.", sortOrder: 2 },
+      { id: "fcc0378d-512d-5b79-9873-6c875709eea0", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Mobile App + Custom Software", optionType: "subtype", priceImpact: "2000", isMultiplier: false, multiplierValue: null, helperText: "Field mobile apps communicating with an internal enterprise system.", sortOrder: 3 },
+      { id: "aebc0212-92f4-576b-b67d-816e1bcb9998", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Complete Ecosystem (Web + App + Software)", optionType: "subtype", priceImpact: "5000", isMultiplier: false, multiplierValue: null, helperText: "End-to-end digital transformation for your entire business operation.", sortOrder: 4 },
+
+      // Features
+      { id: "18fc7be2-a932-5e58-afa7-7ae8541644d5", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Unified Authentication / Single Sign-On", optionType: "feature", priceImpact: "800", isMultiplier: false, multiplierValue: null, helperText: "Users log in with the same credentials across all platforms.", sortOrder: 10 },
+      { id: "6abc5a83-8fb2-57c9-8f6c-96d7c5e5c33a", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Cross-Platform Data Sync", optionType: "feature", priceImpact: "1200", isMultiplier: false, multiplierValue: null, helperText: "Real-time syncing between your web backend, software, and apps.", sortOrder: 11 },
+      { id: "de88a7a8-da23-5fab-8707-04beab481b86", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Centralized Admin Dashboard", optionType: "feature", priceImpact: "1000", isMultiplier: false, multiplierValue: null, helperText: "A single interface to control the website, app users, and software data.", sortOrder: 12 },
+      { id: "dbdc4ce4-1313-509f-a6c5-766ff9a526f9", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Advanced Security Audit & Encryption", optionType: "feature", priceImpact: "1500", isMultiplier: false, multiplierValue: null, helperText: "High-level security practices across all interconnected services.", sortOrder: 13 },
+
+      // Timelines
+      { id: "69cc587e-b4c5-53d7-92c5-9cade070f93e", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Standard Multi-Phase Timeline", optionType: "timeline", priceImpact: "0", isMultiplier: false, multiplierValue: null, helperText: "Delivered in phases over the agreed timeline.", sortOrder: 50 },
+      { id: "73bfdf23-c4d7-5e16-bc28-9ab9d4cd5b07", serviceId: "a1000000-0000-0000-0000-000000000012", label: "Rush Timeline", optionType: "timeline", priceImpact: "0", isMultiplier: true, multiplierValue: "1.25", helperText: "Priority queue — 25% premium. Delivery expedited.", sortOrder: 51 },
+
+    ],
+  },
 ];
 
 export async function loadServices(): Promise<ServiceData[]> {

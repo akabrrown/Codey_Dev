@@ -13,7 +13,8 @@ INSERT INTO services (id, name, slug, description, base_price_min, base_price_ma
   ('a1000000-0000-0000-0000-000000000010', 'Mobile App Development (Production)', 'mobile-app-prod', 'iOS and Android apps for startups, commerce, deliveries, and enterprise field teams.', 8000, 30000, 5),
   ('a1000000-0000-0000-0000-000000000011', 'Mobile App Development (Student Project)', 'mobile-app-student', 'Mobile apps for academic projects, featuring user accounts, notifications, and media uploads.', 1500, 5000, 6),
   ('a1000000-0000-0000-0000-000000000004', 'Website Maintenance', 'maintenance', 'Updates, security patches, content changes, and performance checks for existing websites.', 300, 2000, 7),
-  ('a1000000-0000-0000-0000-000000000005', 'SEO Services', 'seo', 'On-page SEO, keyword research, Google Business setup, and monthly reporting.', 500, 2000, 8)
+  ('a1000000-0000-0000-0000-000000000005', 'SEO Services', 'seo', 'On-page SEO, keyword research, Google Business setup, and monthly reporting.', 500, 2000, 8),
+  ('a1000000-0000-0000-0000-000000000012', 'Custom Multi-Service Bundle', 'custom-bundle', 'Combine multiple services (e.g. Website + Mobile App) for a comprehensive digital ecosystem.', 8000, 25000, 9)
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   slug = EXCLUDED.slug,
@@ -115,7 +116,17 @@ INSERT INTO service_options (id, service_id, label, option_type, price_impact, i
   ('b95d46ed-09f8-538a-89eb-ad1760e47910', 'a1000000-0000-0000-0000-000000000010', 'Camera & Media Processing', 'feature', 1000, false, null, 'Capture photos, scan QR codes, or upload files directly.', 14),
   ('cea55d33-891d-5df4-9b61-c2f0ce37d46c', 'a1000000-0000-0000-0000-000000000010', 'Offline Mode / Local Storage', 'feature', 1500, false, null, 'App functions smoothly without an active internet connection.', 15),
   ('ebe1a11b-4ef4-56b2-aca1-90cce62d7ad1', 'a1000000-0000-0000-0000-000000000010', 'Standard Timeline', 'timeline', 0, false, null, 'Delivered within the standard timeframe agreed at project kick-off.', 50),
-  ('3c50759c-5853-5d0c-b443-127267573559', 'a1000000-0000-0000-0000-000000000010', 'Rush Timeline', 'timeline', 0, true, 1.25, 'Priority queue — 25% premium. Faster delivery may reduce revision rounds.', 51)
+  ('3c50759c-5853-5d0c-b443-127267573559', 'a1000000-0000-0000-0000-000000000010', 'Rush Timeline', 'timeline', 0, true, 1.25, 'Priority queue — 25% premium. Faster delivery may reduce revision rounds.', 51),
+  ('f3c9c03b-ffdf-512d-ae05-fe342ed1cc2d', 'a1000000-0000-0000-0000-000000000012', 'Website + Mobile App', 'subtype', 0, false, null, 'A full customer-facing web presence alongside native mobile applications.', 1),
+  ('635d69d5-8194-5183-98b5-5bdfbca79a1f', 'a1000000-0000-0000-0000-000000000012', 'Website + Custom Software', 'subtype', 1000, false, null, 'A public website powered by a private administrative or inventory backend.', 2),
+  ('fcc0378d-512d-5b79-9873-6c875709eea0', 'a1000000-0000-0000-0000-000000000012', 'Mobile App + Custom Software', 'subtype', 2000, false, null, 'Field mobile apps communicating with an internal enterprise system.', 3),
+  ('aebc0212-92f4-576b-b67d-816e1bcb9998', 'a1000000-0000-0000-0000-000000000012', 'Complete Ecosystem (Web + App + Software)', 'subtype', 5000, false, null, 'End-to-end digital transformation for your entire business operation.', 4),
+  ('18fc7be2-a932-5e58-afa7-7ae8541644d5', 'a1000000-0000-0000-0000-000000000012', 'Unified Authentication / Single Sign-On', 'feature', 800, false, null, 'Users log in with the same credentials across all platforms.', 10),
+  ('6abc5a83-8fb2-57c9-8f6c-96d7c5e5c33a', 'a1000000-0000-0000-0000-000000000012', 'Cross-Platform Data Sync', 'feature', 1200, false, null, 'Real-time syncing between your web backend, software, and apps.', 11),
+  ('de88a7a8-da23-5fab-8707-04beab481b86', 'a1000000-0000-0000-0000-000000000012', 'Centralized Admin Dashboard', 'feature', 1000, false, null, 'A single interface to control the website, app users, and software data.', 12),
+  ('dbdc4ce4-1313-509f-a6c5-766ff9a526f9', 'a1000000-0000-0000-0000-000000000012', 'Advanced Security Audit & Encryption', 'feature', 1500, false, null, 'High-level security practices across all interconnected services.', 13),
+  ('69cc587e-b4c5-53d7-92c5-9cade070f93e', 'a1000000-0000-0000-0000-000000000012', 'Standard Multi-Phase Timeline', 'timeline', 0, false, null, 'Delivered in phases over the agreed timeline.', 50),
+  ('73bfdf23-c4d7-5e16-bc28-9ab9d4cd5b07', 'a1000000-0000-0000-0000-000000000012', 'Rush Timeline', 'timeline', 0, true, 1.25, 'Priority queue — 25% premium. Delivery expedited.', 51)
 ON CONFLICT (id) DO UPDATE SET
   service_id = EXCLUDED.service_id,
   label = EXCLUDED.label,
