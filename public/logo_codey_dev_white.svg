@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 64" fill="none">
+  <defs>
+    <linearGradient id="codeyChevLeftW" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="100%" stop-color="#0077D7" />
+    </linearGradient>
+    <linearGradient id="codeyChevRightW" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3CE5FF" />
+      <stop offset="100%" stop-color="#0088EA" />
+    </linearGradient>
+    <linearGradient id="codeyDevTextW" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Chevron (Outer) -->
+  <path d="M37 17.5 L15 32.5 L37 47.5 L29 55 L0 32.5 L29 10 Z" fill="url(#codeyChevLeftW)" />
+
+  <!-- Right Chevron (Inner) -->
+  <path d="M53 2 L33 32.5 L46 47.5 L38.5 54.5 L20 32.5 L43 2 Z" fill="url(#codeyChevRightW)" />
+
+  <!-- Wordmark -->
+  <text x="64" y="43" font-family="'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-weight="700" font-size="33" letter-spacing="-0.3px">
+    <tspan fill="#FFFFFF">Codey </tspan>
+    <tspan fill="url(#codeyDevTextW)">Dev</tspan>
+  </text>
+</svg>
