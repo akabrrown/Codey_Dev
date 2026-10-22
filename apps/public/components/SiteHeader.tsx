@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { CodeyLogoMark } from "./Icons";
+
 export default function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -23,7 +25,7 @@ export default function SiteHeader() {
       <div className="container">
         <div className="site-header__inner">
           <Link href="/" className="site-header__logo" aria-label="Codey Dev — Home">
-            <span className="site-header__logo-mark" aria-hidden="true" />
+            <CodeyLogoMark size={28} />
             <span>CODEY DEV</span>
           </Link>
 

@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       return apiError(
         "VALIDATION_ERROR",
         "Invalid query parameters.",
-        { status: 400, req, details: parsed.error.format() }
+        { status: 400, req }
       );
     }
 

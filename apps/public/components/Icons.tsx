@@ -108,3 +108,26 @@ export function CloseIcon({ className = "", size = 16 }: { className?: string; s
     </svg>
   );
 }
+
+export function CodeyLogoMark({ className = "", size = 28 }: { className?: string; size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 100 95"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+      style={{ flexShrink: 0, display: "inline-block", verticalAlign: "middle" }}
+    >
+      <path d="M78 8 L32 47.5 L78 87 L62 95 L14 47.5 L62 0 Z" fill="url(#codeyLogoGradient)" />
+      <defs>
+        <linearGradient id="codeyLogoGradient" x1="14" y1="0" x2="78" y2="95" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#38D2F0" />
+          <stop offset="1" stopColor="#1A73E8" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}

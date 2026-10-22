@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       return apiError(
         "VALIDATION_ERROR",
         "Invalid review submission data.",
-        { status: 400, req, details: parsed.error.format() }
+        { status: 400, req }
       );
     }
 
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       req,
       headers: getCorsHeaders(req),
       status: 201,
-      message: "Review submitted successfully and is pending approval.",
+      meta: { message: "Review submitted successfully and is pending approval." },
     });
   } catch (error: any) {
     console.error("POST /api/v1/public/reviews error:", error);

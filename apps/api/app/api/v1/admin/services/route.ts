@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 import { db } from "@codey/db";
 import { services, serviceOptions } from "@codey/db";
-import { getAuthenticatedUserWithReason, apiResponse, apiError, getCorsHeaders } from "../../../../../../lib/api-helpers";
+import { getAuthenticatedUserWithReason, apiResponse, apiError, getCorsHeaders } from "../../../../../lib/api-helpers";
 
 export const dynamic = "force-dynamic";
 

@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codey Dev — Professional Business Flyer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ───────────────────────────────────────────────────────────────────────────
+       CODEY DEV — OFFICIAL BRAND FLYER SPECIFICATION
+       Engineered for 300 DPI High-Resolution Print (A4) and Digital Distribution
+       Palette: Deep Navy (#0E2338, #16324F), Warm Golden Amber (#F2B71A), 
+                Teal Accent (#35C4E0), Clean Warm Paper (#F9F9F7)
+       ─────────────────────────────────────────────────────────────────────────── */
+
+    :root {
+      --color-navy-dark: #0A192A;
+      --color-navy-card: #0E2338;
+      --color-navy-subtle: #16324F;
+      --color-amber: #F2B71A;
+      --color-amber-dark: #DFA00A;
+      --color-amber-light: #FEF7DE;
+      --color-teal: #35C4E0;
+      --color-orange: #F0522A;
+      --color-bg: #F8F9FA;
+      --color-paper: #FFFFFF;
+      --color-text-main: #141A21;
+      --color-text-muted: #5A6573;
+      --color-border: #E5E8EC;
+      
+      --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: #E9ECEF;
+      font-family: var(--font-body);
+      color: var(--color-text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 16px;
+      min-height: 100vh;
+    }
+
+    /* Print & Export Toolbar */
+    .toolbar {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0E2338;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 25px -5px rgba(14, 35, 56, 0.25);
+    }
+
+    .toolbar__title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toolbar__badge {
+      background: var(--color-teal);
+      color: #0A192A;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .toolbar__actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .toolbar__btn {
+      background: var(--color-amber);
+      color: #0A192A;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .toolbar__btn:hover {
+      background: #e2a609;
+      transform: translateY(-1px);
+    }
+
+    .toolbar__btn--secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .toolbar__btn--secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ───────────────────────────────────────────────────────────────────────────
+       FLYER CANVAS (Exact A4 ratio: 1 : 1.414)
+       Optimized for 900px × 1272px on screen, perfectly scales to 300DPI print
+       ─────────────────────────────────────────────────────────────────────────── */
+    .flyer {
+      width: 100%;
+      max-width: 900px;
+      min-height: 1272px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(10, 25, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Subtle background topographic contour texture */
+    .flyer__contour-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60%;
+      height: 48%;
+      pointer-events: none;
+      opacity: 0.045;
+      background-image: radial-gradient(#0E2338 1px, transparent 1px);
+      background-size: 16px 16px;
+      z-index: 1;
+    }
+
+    .flyer__tech-waves {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 480px;
+      height: 420px;
+      pointer-events: none;
+      opacity: 0.35;
+      z-index: 1;
+    }
+
+    /* ── TOP SECTION: PHOTO CUTOUT & HEADER METADATA ───────────────────────── */
+    .top-section {
+      position: relative;
+      width: 100%;
+      display: flex;
+      min-height: 570px;
+      z-index: 2;
+    }
+
+    /* Left Hero Cutout Mask */
+    .hero-photo-wrap {
+      width: 58%;
+      position: relative;
+      clip-path: polygon(0 0, 100% 0, 92% 78%, 76% 92%, 52% 98%, 0 100%);
+      background: #0A192A;
+      overflow: hidden;
+    }
+
+    .hero-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: contrast(1.08) brightness(0.92);
+      display: block;
+    }
+
+    .hero-photo__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg, 
+        rgba(10, 25, 42, 0.82) 0%, 
+        rgba(14, 35, 56, 0.55) 45%, 
+        rgba(10, 25, 42, 0.88) 100%
+      );
+      mix-blend-mode: multiply;
+    }
+
+    .hero-photo__circuit-lines {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(53, 196, 224, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(53, 196, 224, 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    .hero-photo__content {
+      position: absolute;
+      top: 50px;
+      left: 48px;
+      right: 48px;
+      z-index: 3;
+    }
+
+    .hero-headline {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 52px;
+      line-height: 1.04;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .hero-headline .line-white {
+      color: #FFFFFF;
+      display: block;
+    }
+
+    .hero-headline .line-amber {
+      color: var(--color-amber);
+      display: block;
+      text-shadow: 0 0 20px rgba(242, 183, 26, 0.35);
+    }
+
+    .hero-tagline {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 19px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.92);
+      max-width: 380px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-tagline strong {
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    /* Right Contact & Brand Metadata Panel */
+    .top-meta-panel {
+      width: 42%;
+      padding: 44px 44px 30px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      position: relative;
+      z-index: 3;
+    }
+
+    .brand-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .brand-logo-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-logo-mark {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #35C4E0 0%, #16324F 100%);
+      clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%, 20% 50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(53, 196, 224, 0.3);
+    }
+
+    .brand-logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-logo-name {
+      font-family: var(--font-heading);
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 0.12em;
+      color: #0E2338;
+      line-height: 1.1;
+    }
+
+    .brand-logo-tag {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: #DFA00A;
+      text-transform: uppercase;
+    }
+
+    /* Contact Details List */
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 13.5px;
+      color: #2D3748;
+      font-weight: 600;
+    }
+
+    .contact-icon-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-amber-light);
+      border: 1px solid rgba(242, 183, 26, 0.4);
+      color: #9E6F03;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .contact-icon-circle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .contact-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #718096;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .contact-value {
+      color: #0E2338;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    /* QR Code Card */
+    .qr-badge {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      background: #FFFFFF;
+      border: 1.5px solid #E5E8EC;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      margin-top: auto;
+    }
+
+    .qr-badge__box {
+      width: 68px;
+      height: 68px;
+      border-radius: 8px;
+      border: 2px solid var(--color-amber);
+      padding: 4px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .qr-badge__box svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .qr-badge__text {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .qr-badge__headline {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0E2338;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      line-height: 1.25;
+    }
+
+    .qr-badge__sub {
+      font-size: 11px;
+      color: #5A6573;
+      line-height: 1.35;
+    }
+
+    /* ── BOTTOM SECTION: WHO WE ARE (LEFT) & OUR SERVICES (RIGHT) ────────── */
+    .bottom-section {
+      padding: 24px 44px 38px 44px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 32px;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Left Card: Who We Are */
+    .who-card {
+      background: #FBFBFA;
+      border: 1px solid #EAECEF;
+      border-radius: 24px;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(14, 35, 56, 0.03);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .who-card .section-title {
+      color: #0E2338;
+    }
+
+    .who-card__text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #374151;
+      margin-bottom: 18px;
+    }
+
+    .who-card__text strong {
+      color: #0E2338;
+      font-weight: 700;
+    }
+
+    .who-card__quote-box {
+      border-top: 1px solid #E5E7EB;
+      padding-top: 20px;
+      margin-top: 10px;
+    }
+
+    .who-card__quote {
+      font-size: 13.5px;
+      font-style: italic;
+      color: #4B5563;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .who-card__author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .who-card__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #0E2338;
+      color: var(--color-amber);
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--color-amber);
+    }
+
+    .who-card__name {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 14px;
+      color: #0E2338;
+      letter-spacing: 0.02em;
+    }
+
+    .who-card__role {
+      font-size: 11px;
+      color: #6B7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    /* Right Card: OUR SERVICES (Amber Bento Card) */
+    .services-card {
+      background: linear-gradient(145deg, #F5BB1B 0%, #E6A90E 100%);
+      border-radius: 28px;
+      padding: 38px 36px;
+      color: #0A192A;
+      box-shadow: 0 16px 36px rgba(242, 183, 26, 0.28);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .services-card::after {
+      content: "";
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .services-card .section-title {
+      color: #0A192A;
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .services-card__lead {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: rgba(10, 25, 42, 0.88);
+      margin-bottom: 24px;
+      line-height: 1.45;
+    }
+
+    .service-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .service-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      transition: transform 0.2s ease;
+    }
+
+    .service-item:hover {
+      transform: translateX(4px);
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .service-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #0A192A;
+      color: var(--color-amber);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 8px rgba(10, 25, 42, 0.15);
+    }
+
+    .service-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .service-body {
+      flex: 1;
+    }
+
+    .service-name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .service-name {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 15px;
+      color: #0A192A;
+      letter-spacing: -0.01em;
+    }
+
+    .service-price-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0A192A;
+      background: #FFFFFF;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .service-desc {
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(10, 25, 42, 0.82);
+      font-weight: 500;
+    }
+
+    /* ── VALUE PILLARS FOOTER STRIP ────────────────────────────────────────── */
+    .flyer-footer {
+      background: #0A192A;
+      color: #FFFFFF;
+      padding: 16px 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      border-top: 2px solid var(--color-amber);
+    }
+
+    .value-props {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .value-prop-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 0.02em;
+    }
+
+    .value-prop-check {
+      color: var(--color-amber);
+      font-weight: 900;
+    }
+
+    .footer-cta {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--color-amber);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── PRINT RULES (High-Quality 300 DPI A4) ────────────────────────────── */
+    @media print {
+      body {
+        background: transparent !important;
+        padding: 0 !important;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .flyer {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-section {
+        flex-direction: column;
+      }
+      .hero-photo-wrap {
+        width: 100%;
+        min-height: 400px;
+        clip-path: none;
+      }
+      .top-meta-panel {
+        width: 100%;
+        padding: 30px 24px;
+      }
+      .bottom-section {
+        grid-template-columns: 1fr;
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Interactive Utility Bar for Browser Preview & PDF Export -->
+  <div class="toolbar" id="toolbar">
+    <div class="toolbar__title">
+      <span class="toolbar__badge">OFFICIAL ASSET</span>
+      <span>CODEY DEV — Production Business Flyer (300 DPI / A4)</span>
+    </div>
+    <div class="toolbar__actions">
+      <button class="toolbar__btn" onclick="window.print()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Print / Save PDF
+      </button>
+      <a href="https://codeydev.vercel.app/request" target="_blank" class="toolbar__btn toolbar__btn--secondary">
+        Open Quote Portal ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- THE MASTER FLYER -->
+  <main class="flyer" id="flyer-canvas">
+    
+    <!-- Fine Geometric Background Textures -->
+    <div class="flyer__contour-bg" aria-hidden="true"></div>
+    <svg class="flyer__tech-waves" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M50 0 C 150 100, 350 150, 500 120" stroke="#E2E8F0" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <path d="M0 80 C 200 140, 300 280, 500 220" stroke="#E2E8F0" stroke-width="1.2"/>
+      <path d="M20 180 C 220 220, 320 380, 500 320" stroke="#CBD5E1" stroke-width="1"/>
+      <path d="M80 300 C 240 320, 340 440, 500 420" stroke="#E2E8F0" stroke-width="1"/>
+      <circle cx="430" cy="180" r="4" fill="#F2B71A"/>
+      <circle cx="380" cy="280" r="3" fill="#35C4E0"/>
+    </svg>
+
+    <!-- ── TOP SECTION ──────────────────────────────────────────────────────── -->
+    <section class="top-section">
+      
+      <!-- Left Photo Mask with Headline -->
+      <div class="hero-photo-wrap">
+        <img src="images/codey_team_hero.jpg" alt="Codey Dev software engineers collaborating on system architecture in Accra studio" class="hero-photo" onerror="this.src='codey_team_hero.jpg'">
+        <div class="hero-photo__overlay"></div>
+        <div class="hero-photo__circuit-lines"></div>
+
+        <div class="hero-photo__content">
+          <h1 class="hero-headline">
+            <span class="line-white">INNOVATE.</span>
+            <span class="line-amber">BUILD.</span>
+            <span class="line-white">SCALE.</span>
+          </h1>
+          <p class="hero-tagline">
+            <strong>Your business deserves better than templates.</strong> Tailored web platforms, management systems, and mobile apps engineered in Accra for local reliability.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Metadata & Contact Block -->
+      <div class="top-meta-panel">
+        
+        <!-- Brand Logo Lockup -->
+        <div class="brand-header">
+          <div class="brand-logo-lockup">
+            <svg width="34" height="34" viewBox="0 0 100 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M78 8 L32 47.5 L78 87 L62 95 L14 47.5 L62 0 Z" fill="url(#codeyGrad)"/>
+              <defs>
+                <linearGradient id="codeyGrad" x1="14" y1="0" x2="78" y2="95" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#38D2F0"/>
+                  <stop offset="1" stop-color="#1A73E8"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="brand-logo-text">
+              <span class="brand-logo-name" style="font-size: 24px; font-weight: 800; color: #0E2338; letter-spacing: -0.01em;">Codey Dev</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Contact Points -->
+        <ul class="contact-list" style="margin-top: 10px; gap: 20px;">
+          <li class="contact-item">
+            <div class="contact-icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <div>
+              <span class="contact-label">Official Email</span>
+              <a href="mailto:codey.it360@gmail.com" class="contact-value">codey.it360@gmail.com</a>
+            </div>
+          </li>
+
+          <li class="contact-item">
+            <div class="contact-icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div>
+              <span class="contact-label">Direct Calls</span>
+              <span class="contact-value">059 272 2997</span>
+            </div>
+          </li>
+
+          <li class="contact-item">
+            <div class="contact-icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </div>
+            <div>
+              <span class="contact-label">WhatsApp Channel</span>
+              <span class="contact-value">020 381 3606</span>
+            </div>
+          </li>
+
+          <li class="contact-item">
+            <div class="contact-icon-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div>
+              <span class="contact-label">Studio Base</span>
+              <span class="contact-value">Accra, Ghana</span>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+
+    </section>
+
+    <!-- ── BOTTOM SECTION: WHO WE ARE & OUR SERVICES ────────────────────────── -->
+    <section class="bottom-section">
+      
+      <!-- Left: Who We Are Card -->
+      <div class="who-card">
+        <div>
+          <h2 class="section-title">Who We Are?</h2>
+          <p class="who-card__text">
+            Codey Dev is an Accra-based software studio dedicated to engineering <strong>high-performance web platforms, bespoke business systems, and mobile applications</strong> for modern growing brands.
+          </p>
+          <p class="who-card__text">
+            We reject clunky generic templates. Every system is purpose-built for fast performance on local networks, seamless Mobile Money integration, and simple day-to-day management.
+          </p>
+          <p class="who-card__text" style="margin-top: 18px;">
+            Our mission is transforming ideas into iconic digital products that eliminate operational friction and drive verifiable business growth.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Our Services (Vibrant Amber Bento Container) -->
+      <div class="services-card">
+        <h2 class="section-title">Our Services</h2>
+        <p class="services-card__lead">
+          We deliver smart digital solutions for modern growing brands.
+        </p>
+
+        <div class="service-grid">
+          
+          <!-- Service 1: Web Design & Development -->
+          <div class="service-item">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </div>
+            <div class="service-body">
+              <div class="service-name-row">
+                <span class="service-name">Web Design &amp; Dev</span>
+                <span class="service-price-tag">From 1,000 GH₵</span>
+              </div>
+              <p class="service-desc">
+                Corporate websites, e-commerce storefronts, and institutional portals.
+              </p>
+            </div>
+          </div>
+
+          <!-- Service 2: Custom Business Software -->
+          <div class="service-item">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line><polyline points="7 8 10 11 7 14"></polyline><line x1="12" y1="14" x2="16" y2="14"></line></svg>
+            </div>
+            <div class="service-body">
+              <div class="service-name-row">
+                <span class="service-name">Custom Software</span>
+                <span class="service-price-tag">From 2,000 GH₵</span>
+              </div>
+              <p class="service-desc">
+                POS systems, inventory synchronisation, HR &amp; School management systems.
+              </p>
+            </div>
+          </div>
+
+          <!-- Service 3: Mobile App Engineering -->
+          <div class="service-item">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            </div>
+            <div class="service-body">
+              <div class="service-name-row">
+                <span class="service-name">Mobile App Dev</span>
+                <span class="service-price-tag">From 2,500 GH₵</span>
+              </div>
+              <p class="service-desc">
+                iOS &amp; Android cross-platform apps with offline caching and native MoMo checkout.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── FOOTER TRUST STRIP ────────────────────────────────────────────────── -->
+    <footer class="flyer-footer">
+      <div class="value-props">
+        <div class="value-prop-item">
+          <span class="value-prop-check">✓</span> 50% Milestone Deposit
+        </div>
+        <div class="value-prop-item">
+          <span class="value-prop-check">✓</span> MTN MoMo &amp; Paystack Ready
+        </div>
+        <div class="value-prop-item">
+          <span class="value-prop-check">✓</span> Direct WhatsApp Developer Access
+        </div>
+        <div class="value-prop-item">
+          <span class="value-prop-check">✓</span> Written Scope &amp; Warranty
+        </div>
+      </div>
+      <div class="footer-cta">
+        Ready to build? 020 381 3606
+      </div>
+    </footer>
+
+  </main>
+
+</body>
+</html>

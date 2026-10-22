@@ -11,10 +11,10 @@ export async function OPTIONS(req: Request) {
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
     const body = await req.json();
     const parsed = AdminUpdateReviewSchema.safeParse(body);
 
@@ -22,7 +22,7 @@ export async function PATCH(
       return apiError(
         "VALIDATION_ERROR",
         "Invalid update data.",
-        { status: 400, req, details: parsed.error.format() }
+        { status: 400, req }
       );
     }
 

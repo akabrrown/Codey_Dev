@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CodeyLogoMark } from "./Icons";
 
 export default function SiteFooter() {
   return (
@@ -14,7 +15,7 @@ export default function SiteFooter() {
           {/* Brand Column */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-4)" }}>
-              <span className="site-header__logo-mark" aria-hidden="true" />
+              <CodeyLogoMark size={28} />
               <span style={{ fontWeight: 800, letterSpacing: "0.12em", color: "var(--color-white)" }}>
                 CODEY DEV
               </span>
