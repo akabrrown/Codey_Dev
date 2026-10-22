@@ -14,10 +14,9 @@ export default function SiteFooter() {
         }}>
           {/* Brand Column */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-4)" }}>
-              <CodeyLogoMark size={28} />
-              <span style={{ fontWeight: 800, letterSpacing: "0.12em", color: "var(--color-white)" }}>
-                CODEY DEV
+            <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--space-4)" }}>
+              <span style={{ background: "rgba(255, 255, 255, 0.96)", padding: "4px 12px", borderRadius: "8px", display: "inline-flex", alignItems: "center" }}>
+                <img src="/images/logo_codey_dev_enhanced.png" alt="Codey Dev" style={{ height: "26px", width: "auto", display: "block" }} />
               </span>
             </div>
             <p style={{ color: "rgba(255, 255, 255, 0.65)", fontSize: "0.875rem", lineHeight: 1.6, maxWidth: "260px" }}>

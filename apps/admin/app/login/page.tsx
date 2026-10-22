@@ -66,21 +66,14 @@ function LoginForm() {
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          width: "56px",
-          height: "56px",
+          padding: "8px 18px",
           borderRadius: "var(--radius-md)",
-          backgroundColor: "var(--color-navy-dark)",
+          backgroundColor: "#FFFFFF",
+          boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+          border: "1px solid #E2E8F0",
           marginBottom: "1rem",
         }}>
-          <svg width="36" height="36" viewBox="0 0 100 95" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M78 8 L32 47.5 L78 87 L62 95 L14 47.5 L62 0 Z" fill="url(#loginLogoGrad)"/>
-            <defs>
-              <linearGradient id="loginLogoGrad" x1="14" y1="0" x2="78" y2="95" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#38D2F0"/>
-                <stop offset="1" stopColor="#1A73E8"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <img src="/images/logo_codey_dev_enhanced.png" alt="Codey Dev" style={{ height: "38px", width: "auto" }} />
         </div>
         <h1 style={{ fontSize: "1.5rem", color: "var(--color-navy-dark)", fontWeight: 700 }}>
           Codey Dev Admin

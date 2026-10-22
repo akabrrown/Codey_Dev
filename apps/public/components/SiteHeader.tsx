@@ -24,9 +24,10 @@ export default function SiteHeader() {
     <header className="site-header" role="banner">
       <div className="container">
         <div className="site-header__inner">
-          <Link href="/" className="site-header__logo" aria-label="Codey Dev — Home">
-            <CodeyLogoMark size={28} />
-            <span>CODEY DEV</span>
+          <Link href="/" className="site-header__logo" aria-label="Codey Dev — Home" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
+            <span style={{ background: "rgba(255, 255, 255, 0.96)", padding: "4px 12px", borderRadius: "8px", display: "inline-flex", alignItems: "center", boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+              <img src="/images/logo_codey_dev_enhanced.png" alt="Codey Dev" style={{ height: "26px", width: "auto", display: "block" }} />
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
