@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codey Dev — 728x90 Leaderboard Ad Banners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ───────────────────────────────────────────────────────────────────────────
+       CODEY DEV — OFFICIAL 728x90 LEADERBOARD BANNER SUITE
+       Standard IAB Leaderboard (728px × 90px)
+       Engineered for Display Ads, Google Display Network, and Website Headers
+       ─────────────────────────────────────────────────────────────────────────── */
+
+    :root {
+      --color-navy-dark: #0A192A;
+      --color-navy-card: #0E2338;
+      --color-amber: #F2B71A;
+      --color-amber-dark: #DFA00A;
+      --color-cyan: #38D2F0;
+      --color-blue: #0088EA;
+      --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: #0F172A;
+      font-family: var(--font-body);
+      color: #E2E8F0;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
+      min-height: 100vh;
+    }
+
+    /* Page Header */
+    .page-header {
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .page-badge {
+      display: inline-block;
+      background: rgba(56, 210, 240, 0.12);
+      color: var(--color-cyan);
+      border: 1px solid rgba(56, 210, 240, 0.3);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .page-title {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .page-desc {
+      font-size: 14px;
+      color: #94A3B8;
+      line-height: 1.5;
+    }
+
+    /* Banner Showcase Card */
+    .banner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .banner-label-row {
+      width: 728px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94A3B8;
+    }
+
+    .banner-tag {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F8FAFC;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════════════
+       MASTER 728x90 BANNER BASE SPECIFICATION
+       Exact dimensions: 728px width, 90px height
+       ═════════════════════════════════════════════════════════════════════════ */
+    .banner-728x90 {
+      width: 728px;
+      height: 90px;
+      min-width: 728px;
+      min-height: 90px;
+      max-width: 728px;
+      max-height: 90px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px 0 16px;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      user-select: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .banner-728x90:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -5px rgba(0, 0, 0, 0.45);
+    }
+
+    /* ── VARIANT 1: FLAGSHIP MIDNIGHT NAVY & AMBER ─────────────────────────── */
+    .banner--navy {
+      background: linear-gradient(105deg, #071320 0%, #0A192A 40%, #0E2338 100%);
+      border: 1px solid rgba(56, 210, 240, 0.28);
+      color: #FFFFFF;
+    }
+
+    .banner--navy::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #38D2F0 0%, #F2B71A 60%, transparent 100%);
+    }
+
+    .banner--navy .circuit-accent {
+      position: absolute;
+      right: 180px;
+      top: -20px;
+      width: 140px;
+      height: 130px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    /* ── VARIANT 2: HIGH-CTR VIBRANT AMBER (Bento Flyer Edition) ────────────── */
+    .banner--amber {
+      background: linear-gradient(100deg, #F5BB1B 0%, #EAA80E 100%);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #0A192A;
+    }
+
+    .banner--amber::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── VARIANT 3: CLEAN MINIMAL AGENCY WHITE ───────────────────────────────── */
+    .banner--white {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #0A192A;
+    }
+
+    .banner--white::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, #38D2F0 0%, #0088EA 100%);
+    }
+
+    /* ── BANNER SUB-COMPONENTS ──────────────────────────────────────────────── */
+    /* Left: Logo Column */
+    .banner-col-logo {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      flex-shrink: 0;
+      width: 155px;
+      z-index: 2;
+    }
+
+    .banner-logo-img {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .banner-logo-tagline {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .banner--navy .banner-logo-tagline { color: #38D2F0; }
+    .banner--amber .banner-logo-tagline { color: #0A192A; opacity: 0.8; }
+    .banner--white .banner-logo-tagline { color: #0077D7; }
+
+    /* Vertical Divider */
+    .banner-divider {
+      width: 1px;
+      height: 60px;
+      flex-shrink: 0;
+      margin: 0 10px;
+    }
+
+    .banner--navy .banner-divider { background: rgba(255, 255, 255, 0.12); }
+    .banner--amber .banner-divider { background: rgba(10, 25, 42, 0.15); }
+    .banner--white .banner-divider { background: #E2E8F0; }
+
+    /* Center: Message & Offer Matrix */
+    .banner-col-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      gap: 5px;
+      padding-right: 12px;
+      z-index: 2;
+    }
+
+    .banner-headline {
+      font-family: var(--font-heading);
+      font-size: 14.5px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .banner--navy .banner-headline { color: #FFFFFF; }
+    .banner--navy .banner-headline strong { color: var(--color-amber); }
+    
+    .banner--amber .banner-headline { color: #0A192A; }
+    .banner--amber .banner-headline strong { color: #000000; text-decoration: underline; text-decoration-color: rgba(10, 25, 42, 0.3); }
+
+    .banner--white .banner-headline { color: #0A192A; }
+    .banner--white .banner-headline strong { color: #0077D7; }
+
+    /* Pricing Badges Row */
+    .banner-offer-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+
+    .offer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2.5px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    .offer-pill strong {
+      font-weight: 800;
+    }
+
+    .banner--navy .offer-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #E2E8F0;
+    }
+    .banner--navy .offer-pill strong { color: #38D2F0; }
+
+    .banner--amber .offer-pill {
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      color: #0A192A;
+    }
+    .banner--amber .offer-pill strong { color: #0A192A; }
+
+    .banner--white .offer-pill {
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      color: #334155;
+    }
+    .banner--white .offer-pill strong { color: #0284C7; }
+
+    /* Trust Highlights Subtext */
+    .banner-trust-line {
+      font-size: 9.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.01em;
+    }
+
+    .banner--navy .banner-trust-line { color: rgba(255, 255, 255, 0.65); }
+    .banner--navy .trust-check { color: var(--color-amber); font-weight: 800; }
+
+    .banner--amber .banner-trust-line { color: rgba(10, 25, 42, 0.78); font-weight: 500; }
+    .banner--amber .trust-check { color: #0A192A; font-weight: 900; }
+
+    .banner--white .banner-trust-line { color: #64748B; }
+    .banner--white .trust-check { color: #0077D7; font-weight: 800; }
+
+    /* Right: CTA & Direct Contact */
+    .banner-col-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 4px;
+      flex-shrink: 0;
+      width: 150px;
+      z-index: 2;
+    }
+
+    .banner-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 7px 14px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .banner--navy .banner-btn {
+      background: linear-gradient(135deg, #F5BB1B 0%, #EAA80E 100%);
+      color: #0A192A;
+    }
+    .banner--navy .banner-btn:hover {
+      background: #F5BB1B;
+      transform: scale(1.02);
+    }
+
+    .banner--amber .banner-btn {
+      background: #0A192A;
+      color: #FFFFFF;
+    }
+    .banner--amber .banner-btn:hover {
+      background: #16324F;
+      transform: scale(1.02);
+    }
+
+    .banner--white .banner-btn {
+      background: #0A192A;
+      color: #FFFFFF;
+    }
+    .banner--white .banner-btn:hover {
+      background: #0077D7;
+      transform: scale(1.02);
+    }
+
+    .banner-contact-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .banner--navy .banner-contact-sub { color: rgba(255, 255, 255, 0.75); }
+    .banner--amber .banner-contact-sub { color: #0A192A; font-weight: 700; }
+    .banner--white .banner-contact-sub { color: #475569; }
+
+    /* Action bar */
+    .download-bar {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .download-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .download-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div class="page-badge">STANDARD IAB LEADERBOARD • 728 × 90 PX</div>
+    <h1 class="page-title">Codey Dev 728×90 Advertising Suite</h1>
+    <p class="page-desc">
+      Official production display ad banners featuring the verified logo, pricing tiers, and direct WhatsApp contact.
+    </p>
+  </header>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════
+       VARIATION 1: FLAGSHIP MIDNIGHT NAVY & AMBER (728x90)
+       ═════════════════════════════════════════════════════════════════════════ -->
+  <div class="banner-container">
+    <div class="banner-label-row">
+      <span>VARIATION A: MIDNIGHT NAVY &amp; AMBER (FLAGSHIP)</span>
+      <span class="banner-tag">728 × 90 px</span>
+    </div>
+
+    <a href="https://codeydev.vercel.app/request" target="_blank" class="banner-728x90 banner--navy" id="banner-navy">
+      <!-- Circuit motif background accent -->
+      <svg class="circuit-accent" viewBox="0 0 100 100" fill="none" stroke="#38D2F0" stroke-width="1.2">
+        <path d="M0,20 L40,20 L60,50 L90,50" />
+        <path d="M20,0 L20,40 L50,70 L100,70" />
+        <circle cx="90" cy="50" r="3" fill="#38D2F0" />
+        <circle cx="60" cy="50" r="2" fill="#F2B71A" />
+      </svg>
+
+      <!-- Logo Column -->
+      <div class="banner-col-logo">
+        <img src="logo_codey_dev_enhanced.png" alt="Codey Dev" class="banner-logo-img" onerror="this.src='images/logo_codey_dev_enhanced.png'">
+        <span class="banner-logo-tagline">SOFTWARE STUDIO • ACCRA</span>
+      </div>
+
+      <!-- Divider -->
+      <div class="banner-divider"></div>
+
+      <!-- Center Copy & Pricing Tiers -->
+      <div class="banner-col-center">
+        <div class="banner-headline">
+          Your Business Deserves <strong>Better Than Templates.</strong>
+        </div>
+        <div class="banner-offer-row">
+          <span class="offer-pill">Websites <strong>From 1,000 GH₵</strong></span>
+          <span class="offer-pill">Custom POS/Software <strong>From 2,000 GH₵</strong></span>
+          <span class="offer-pill">Apps <strong>From 2,500 GH₵</strong></span>
+        </div>
+        <div class="banner-trust-line">
+          <span><span class="trust-check">✓</span> 50% Milestone Deposit</span>
+          <span><span class="trust-check">✓</span> MTN MoMo &amp; Paystack Ready</span>
+          <span><span class="trust-check">✓</span> Direct Developer Contact</span>
+        </div>
+      </div>
+
+      <!-- Right CTA -->
+      <div class="banner-col-cta">
+        <div class="banner-btn">
+          Get Free Quote →
+        </div>
+        <div class="banner-contact-sub">
+          <span>💬 WhatsApp: 020 381 3606</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+
+  <!-- ═════════════════════════════════════════════════════════════════════════
+       VARIATION 2: VIBRANT HIGH-CTR AMBER (Bento Flyer Edition) (728x90)
+       ═════════════════════════════════════════════════════════════════════════ -->
+  <div class="banner-container">
+    <div class="banner-label-row">
+      <span>VARIATION B: VIBRANT GOLDEN AMBER (HIGH CTR)</span>
+      <span class="banner-tag">728 × 90 px</span>
+    </div>
+
+    <a href="https://codeydev.vercel.app/request" target="_blank" class="banner-728x90 banner--amber" id="banner-amber">
+      <!-- Logo Column -->
+      <div class="banner-col-logo">
+        <img src="logo_codey_dev_enhanced.png" alt="Codey Dev" class="banner-logo-img" onerror="this.src='images/logo_codey_dev_enhanced.png'">
+        <span class="banner-logo-tagline">SOFTWARE STUDIO • ACCRA</span>
+      </div>
+
+      <!-- Divider -->
+      <div class="banner-divider"></div>
+
+      <!-- Center Copy & Pricing Tiers -->
+      <div class="banner-col-center">
+        <div class="banner-headline">
+          Bespoke Websites, POS &amp; Mobile Apps <strong>Built in Ghana</strong>
+        </div>
+        <div class="banner-offer-row">
+          <span class="offer-pill">Websites <strong>From 1,000 GH₵</strong></span>
+          <span class="offer-pill">Software <strong>From 2,000 GH₵</strong></span>
+          <span class="offer-pill">Apps <strong>From 2,500 GH₵</strong></span>
+        </div>
+        <div class="banner-trust-line">
+          <span><span class="trust-check">✓</span> High Speed on Local Networks</span>
+          <span><span class="trust-check">✓</span> MoMo Integrated</span>
+          <span><span class="trust-check">✓</span> Full Source Code Ownership</span>
+        </div>
+      </div>
+
+      <!-- Right CTA -->
+      <div class="banner-col-cta">
+        <div class="banner-btn">
+          Start Project →
+        </div>
+        <div class="banner-contact-sub">
+          <span>📞 Call: 059 272 2997</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+
+  <!-- ═════════════════════════════════════════════════════════════════════════
+       VARIATION 3: CLEAN MINIMAL AGENCY WHITE (728x90)
+       ═════════════════════════════════════════════════ -->
+  <div class="banner-container">
+    <div class="banner-label-row">
+      <span>VARIATION C: CLEAN EDITORIAL WHITE (PUBLISHER / BLOGS)</span>
+      <span class="banner-tag">728 × 90 px</span>
+    </div>
+
+    <a href="https://codeydev.vercel.app/request" target="_blank" class="banner-728x90 banner--white" id="banner-white">
+      <!-- Logo Column -->
+      <div class="banner-col-logo">
+        <img src="logo_codey_dev_enhanced.png" alt="Codey Dev" class="banner-logo-img" onerror="this.src='images/logo_codey_dev_enhanced.png'">
+        <span class="banner-logo-tagline">ACCRA, GHANA</span>
+      </div>
+
+      <!-- Divider -->
+      <div class="banner-divider"></div>
+
+      <!-- Center Copy & Pricing Tiers -->
+      <div class="banner-col-center">
+        <div class="banner-headline">
+          Custom Web Platforms, POS &amp; Mobile Apps <strong>Starting at 1,000 GH₵</strong>
+        </div>
+        <div class="banner-offer-row">
+          <span class="offer-pill">Corporate Web</span>
+          <span class="offer-pill">E-Commerce &amp; MoMo</span>
+          <span class="offer-pill">Inventory &amp; POS</span>
+          <span class="offer-pill">iOS &amp; Android Apps</span>
+        </div>
+        <div class="banner-trust-line">
+          <span><span class="trust-check">✓</span> Transparent Fixed Pricing</span>
+          <span><span class="trust-check">✓</span> 24h Written Scope Guarantee</span>
+        </div>
+      </div>
+
+      <!-- Right CTA -->
+      <div class="banner-col-cta">
+        <div class="banner-btn">
+          Get a Quote →
+        </div>
+        <div class="banner-contact-sub">
+          <span>💬 WhatsApp: 020 381 3606</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="download-bar">
+    <button class="download-btn" onclick="window.print()">
+      🖨️ Print / Save PDF
+    </button>
+    <a href="https://codeydev.vercel.app/request" target="_blank" class="download-btn">
+      🌐 Open Live Quote Portal ↗
+    </a>
+  </div>
+
+</body>
+</html>

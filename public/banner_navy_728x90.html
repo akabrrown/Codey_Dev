@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Codey Dev Banner 728x90 Navy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+    html, body { width: 728px; height: 90px; overflow: hidden; background: transparent; font-family: 'Inter', sans-serif; }
+    .banner {
+      width: 728px; height: 90px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; background: linear-gradient(105deg, #071320 0%, #0A192A 40%, #0E2338 100%);
+      border: 1px solid rgba(56, 210, 240, 0.35); color: #FFFFFF; text-decoration: none;
+    }
+    .banner::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #38D2F0 0%, #F2B71A 60%, transparent 100%);
+    }
+    .circuit-accent { position: absolute; right: 180px; top: -20px; width: 140px; height: 130px; opacity: 0.12; pointer-events: none; }
+    .col-logo { display: flex; flex-direction: column; justify-content: center; gap: 3px; flex-shrink: 0; width: 155px; z-index: 2; }
+    .logo-img { height: 34px; width: auto; object-fit: contain; display: block; }
+    .logo-tagline { font-size: 8.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #38D2F0; }
+    .divider { width: 1px; height: 60px; flex-shrink: 0; margin: 0 10px; background: rgba(255, 255, 255, 0.12); }
+    .col-center { display: flex; flex-direction: column; justify-content: center; flex: 1; gap: 5px; padding-right: 12px; z-index: 2; }
+    .headline { font-family: 'Outfit', sans-serif; font-size: 14.5px; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; white-space: nowrap; color: #FFFFFF; }
+    .headline strong { color: #F2B71A; }
+    .offer-row { display: flex; align-items: center; gap: 6px; }
+    .pill { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 600; padding: 2.5px 7px; border-radius: 4px; white-space: nowrap; line-height: 1.2; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14); color: #E2E8F0; }
+    .pill strong { color: #38D2F0; font-weight: 800; }
+    .trust-line { font-size: 9.5px; display: flex; align-items: center; gap: 10px; color: rgba(255, 255, 255, 0.65); }
+    .trust-check { color: #F2B71A; font-weight: 800; }
+    .col-cta { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; flex-shrink: 0; width: 150px; z-index: 2; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Outfit', sans-serif; font-size: 12.5px; font-weight: 800; padding: 7px 14px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; text-decoration: none; background: linear-gradient(135deg, #F5BB1B 0%, #EAA80E 100%); color: #0A192A; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
+    .contact-sub { font-size: 9.5px; font-weight: 600; letter-spacing: 0.03em; color: rgba(255, 255, 255, 0.75); }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <svg class="circuit-accent" viewBox="0 0 100 100" fill="none" stroke="#38D2F0" stroke-width="1.2">
+      <path d="M0,20 L40,20 L60,50 L90,50" />
+      <path d="M20,0 L20,40 L50,70 L100,70" />
+      <circle cx="90" cy="50" r="3" fill="#38D2F0" />
+      <circle cx="60" cy="50" r="2" fill="#F2B71A" />
+    </svg>
+    <div class="col-logo">
+      <img src="logo_codey_dev_enhanced.png" alt="Codey Dev" class="logo-img">
+      <span class="logo-tagline">SOFTWARE STUDIO • ACCRA</span>
+    </div>
+    <div class="divider"></div>
+    <div class="col-center">
+      <div class="headline">
+        Your Business Deserves <strong>Better Than Templates.</strong>
+      </div>
+      <div class="offer-row">
+        <span class="pill">Websites <strong>From 1,000 GH₵</strong></span>
+        <span class="pill">Custom POS/Software <strong>From 2,000 GH₵</strong></span>
+        <span class="pill">Apps <strong>From 2,500 GH₵</strong></span>
+      </div>
+      <div class="trust-line">
+        <span><span class="trust-check">✓</span> 50% Milestone Deposit</span>
+        <span><span class="trust-check">✓</span> MTN MoMo &amp; Paystack Ready</span>
+        <span><span class="trust-check">✓</span> Direct Developer Contact</span>
+      </div>
+    </div>
+    <div class="col-cta">
+      <div class="btn">Get Free Quote →</div>
+      <div class="contact-sub">💬 WhatsApp: 020 381 3606</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Codey Dev Banner 728x90 Amber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+    html, body { width: 728px; height: 90px; overflow: hidden; background: transparent; font-family: 'Inter', sans-serif; }
+    .banner {
+      width: 728px; height: 90px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; background: linear-gradient(100deg, #F5BB1B 0%, #EAA80E 100%);
+      border: 1px solid rgba(255, 255, 255, 0.5); color: #0A192A; text-decoration: none;
+    }
+    .banner::after {
+      content: ''; position: absolute; right: -20px; bottom: -20px; width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, transparent 70%); pointer-events: none;
+    }
+    .col-logo { display: flex; flex-direction: column; justify-content: center; gap: 3px; flex-shrink: 0; width: 155px; z-index: 2; }
+    .logo-img { height: 34px; width: auto; object-fit: contain; display: block; }
+    .logo-tagline { font-size: 8.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #0A192A; opacity: 0.85; }
+    .divider { width: 1px; height: 60px; flex-shrink: 0; margin: 0 10px; background: rgba(10, 25, 42, 0.15); }
+    .col-center { display: flex; flex-direction: column; justify-content: center; flex: 1; gap: 5px; padding-right: 12px; z-index: 2; }
+    .headline { font-family: 'Outfit', sans-serif; font-size: 14.5px; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; white-space: nowrap; color: #0A192A; }
+    .headline strong { color: #000000; text-decoration: underline; text-decoration-color: rgba(10, 25, 42, 0.3); }
+    .offer-row { display: flex; align-items: center; gap: 6px; }
+    .pill { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 600; padding: 2.5px 7px; border-radius: 4px; white-space: nowrap; line-height: 1.2; background: rgba(255, 255, 255, 0.55); border: 1px solid rgba(255, 255, 255, 0.7); color: #0A192A; }
+    .pill strong { color: #0A192A; font-weight: 800; }
+    .trust-line { font-size: 9.5px; display: flex; align-items: center; gap: 10px; color: rgba(10, 25, 42, 0.78); font-weight: 500; }
+    .trust-check { color: #0A192A; font-weight: 900; }
+    .col-cta { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; flex-shrink: 0; width: 150px; z-index: 2; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Outfit', sans-serif; font-size: 12.5px; font-weight: 800; padding: 7px 14px; border-radius: 6px; letter-spacing: 0.02em; white-space: nowrap; text-decoration: none; background: #0A192A; color: #FFFFFF; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
+    .contact-sub { font-size: 9.5px; font-weight: 700; letter-spacing: 0.03em; color: #0A192A; }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div class="col-logo">
+      <img src="logo_codey_dev_enhanced.png" alt="Codey Dev" class="logo-img">
+      <span class="logo-tagline">SOFTWARE STUDIO • ACCRA</span>
+    </div>
+    <div class="divider"></div>
+    <div class="col-center">
+      <div class="headline">
+        Bespoke Websites, POS &amp; Mobile Apps <strong>Built in Ghana</strong>
+      </div>
+      <div class="offer-row">
+        <span class="pill">Websites <strong>From 1,000 GH₵</strong></span>
+        <span class="pill">Software <strong>From 2,000 GH₵</strong></span>
+        <span class="pill">Apps <strong>From 2,500 GH₵</strong></span>
+      </div>
+      <div class="trust-line">
+        <span><span class="trust-check">✓</span> High Speed on Local Networks</span>
+        <span><span class="trust-check">✓</span> MoMo Integrated</span>
+        <span><span class="trust-check">✓</span> Full Source Code Ownership</span>
+      </div>
+    </div>
+    <div class="col-cta">
+      <div class="btn">Start Project →</div>
+      <div class="contact-sub">📞 Call: 059 272 2997</div>
+    </div>
+  </div>
+</body>
+</html>
